@@ -3,7 +3,7 @@
 COLOR **buffer;
 COLOR *color_mapa;
 
-int resolucion, cant_lineas, cant_veces;
+int resolucion;
 void draw_scene();
 void init_colors();
 void init_buffer();
