@@ -2,10 +2,10 @@
 
 int delta_x, delta_y, d, xp, yp, Delta_E, Delta_S, Delta_SE, Delta_N, Delta_NE;
 
-void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar)(int, int, COLOR *));
-void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar)(int, int, COLOR *));
+void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color);
+void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color);
 
-void bresenham(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar)(int, int, COLOR *))
+void bresenham(int x0, int y0, int x1, int y1, COLOR *color)
 {
     delta_x = (x1 - x0);
     delta_y = (y1 - y0);
@@ -15,28 +15,28 @@ void bresenham(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar
         {
             delta_x= -(delta_x);
             delta_y= -(delta_y);
-            cuadrante1(x1, y1, x0, y0, color, (*func_dibujar));
+            cuadrante1(x1, y1, x0, y0, color);
         }
         else // x- y+
         {
             delta_x= -(delta_x);
             delta_y= -(delta_y);
-            cuadrante2(x1, y1, x0, y0, color, (*func_dibujar));
+            cuadrante2(x1, y1, x0, y0, color);
         }
     else
     {
         if (delta_y < 0) // x+ y-
         {
-            cuadrante2(x0, y0, x1, y1, color, (*func_dibujar));
+            cuadrante2(x0, y0, x1, y1, color);
         }
         else // x+ y+
         {
-            cuadrante1(x0, y0, x1, y1, color, (*func_dibujar));
+            cuadrante1(x0, y0, x1, y1, color);
         }
     }
 }
 
-void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar)(int, int, COLOR *))
+void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color)
 {
     //
     Delta_NE = 2 * ((delta_y) - (delta_x));
@@ -44,7 +44,7 @@ void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
     xp = x0;
     yp = y0;
 
-    (*func_dibujar)((xp), (yp), color);
+    dibujar(xp, yp, color);
     if (delta_x > delta_y) // octante1 /5
     {
         Delta_E = 2 * (delta_y);
@@ -62,7 +62,7 @@ void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
                 yp++;
                 d = d + Delta_NE;
             }
-            (*func_dibujar)((xp), (yp), color);
+            dibujar(xp, yp, color);
         }
     }
     else //               octante2 / 6
@@ -83,12 +83,12 @@ void cuadrante1(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
                 yp++;
                 d = d + Delta_NE;
             }
-            (*func_dibujar)((xp), (yp), color);
+            dibujar(xp, yp, color);
         }
     }
 }
 
-void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibujar)(int, int, COLOR *))
+void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color)
 {
     //
     Delta_SE = 2 * (delta_y + delta_x);
@@ -96,7 +96,7 @@ void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
     xp = x0;
     yp = y0;
 
-    (*func_dibujar)((xp), (yp), color);
+    dibujar(xp, yp, color);
     if (delta_x > abs(delta_y)) // octante  8/4
     {
         Delta_E = 2 * delta_y;
@@ -114,7 +114,7 @@ void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
                 yp--;
                 d = d + Delta_SE;
             }
-            (*func_dibujar)((xp), (yp), color);
+            dibujar(xp, yp, color);
         }
         return;
     }
@@ -135,7 +135,7 @@ void cuadrante2(int x0, int y0, int x1, int y1, COLOR *color, void (*func_dibuja
                 yp--;
                 d = d + Delta_SE;
             }
-            (*func_dibujar)((xp), (yp), color);
+            dibujar(xp, yp, color);
         }
     }
 }

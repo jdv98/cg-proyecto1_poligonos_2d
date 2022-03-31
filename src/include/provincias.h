@@ -10,12 +10,12 @@ typedef struct {
     char * nombre;
     int size;
     
-    POLIGONO * poligonos;
+    POLIGONO ** poligonos;
 } PROVINCIA;
 
 typedef struct {
     int size;
-    PROVINCIA * provincias;
+    PROVINCIA ** provincias;
 } PROVINCIAS;
 
 extern PROVINCIAS *provincias;

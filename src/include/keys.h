@@ -9,7 +9,6 @@
 /******************/
 #include "provincias.h"
 #include "algoritmo_bresenham.h"
-#include "dibujar.h"
 /******************/
 
 void normal_keys(unsigned char key, int x, int y);

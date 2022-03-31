@@ -22,7 +22,7 @@ void cargarProvincias(const char *filename)
 
     provincias = malloc(json_object_array_length(features) * sizeof(PROVINCIAS));
     provincias->size = json_object_array_length(features);
-    provincias->provincias = malloc(provincias->size * sizeof(PROVINCIA));
+    provincias->provincias = (PROVINCIA **)malloc(provincias->size * sizeof(PROVINCIA*));
 
     for (size_t i = 0; i < provincias->size; i++)
     {
@@ -43,11 +43,10 @@ void cargarProvincias(const char *filename)
                 obj = json_object_array_get_idx(polygon, k);
                 agregar_vertices(&poligono->vertices[k],obj);
             }
-            provincia->poligonos[j] = (POLIGONO)*poligono;
-            free(poligono);
+            provincia->poligonos[j] = poligono;
         }
-        provincias->provincias[i] = (PROVINCIA)*provincia;
-        free(provincia);
+        
+        provincias->provincias[i] = provincia;
     }
 }
 
@@ -55,7 +54,7 @@ void crear_provincia(PROVINCIA ** provincia,json_object *nombre,json_object *len
     (*provincia) = malloc(sizeof(PROVINCIA));
     (*provincia)->nombre = (char *)json_object_get_string(nombre);
     (*provincia)->size = json_object_array_length(length_geometries);
-    (*provincia)->poligonos = (POLIGONO *)malloc((*provincia)->size * sizeof(POLIGONO));
+    (*provincia)->poligonos = (POLIGONO **)malloc((*provincia)->size * sizeof(POLIGONO*));
 }
 
 void crear_poligono(POLIGONO ** poligono,json_object *length_vertices){
