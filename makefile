@@ -9,9 +9,9 @@ OBJECTS=$(patsubst %, $(OBJ_DIR)/%.o, $(FILES))
 OUTPUT=$(BIN_DIR)/main
 
 ######
-CFLAGS=-I/usr/local/Mesa-3.4/include $(shell pkg-config --cflags json-c)
+CFLAGS=-I/usr/local/Mesa-3.4/include
 LDLIBS=-lX11 -lglut -lGLU -lGL -lm -lXext -lXmu
-LDFLAGS=-L/usr/local/Mesa-3.4/lib -L/usr/X11R6/lib $(shell pkg-config --libs json-c)
+LDFLAGS=-L/usr/local/Mesa-3.4/lib -L/usr/X11R6/lib
 
 ######
 $(OUTPUT): $(OBJECTS)
@@ -20,7 +20,7 @@ $(OUTPUT): $(OBJECTS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	mkdir -p obj
-	gcc -g  $(shell pkg-config --cflags json-c) -c -MMD $< -o $@
+	gcc -g -c -MMD $< -o $@
 
 
 -include $(OBJ_DIR)/*.d
