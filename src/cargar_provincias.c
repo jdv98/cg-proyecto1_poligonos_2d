@@ -2,69 +2,129 @@
 
 PROVINCIAS *provincias;
 
-void crear_provincia(PROVINCIA ** provincia,json_object *nombre,json_object *length_geometries);
-void crear_poligono(POLIGONO ** poligono,json_object *length_vertices);
-void agregar_vertices(double ** vertice,json_object *json_vertice);
+double ** realloc_vertices(POLIGONO ** poligono){
+    (*poligono)->size++;
+    (*poligono)->vertices=realloc((*poligono)->vertices,(*poligono)->size*sizeof(double*));
+    (*poligono)->vertices[(*poligono)->size-1]=malloc(2*sizeof(double));
+    return &(*poligono)->vertices[(*poligono)->size-1];
+}
 
-void cargarProvincias(const char *filename)
-{
-    POLIGONO *poligono;
-    PROVINCIA *provincia;
-    struct json_object  *obj,
-                        *geometries,
-                        *polygon,
-                        *nombre,
-                        *features;
+POLIGONO ** realloc_poligonos(PROVINCIA ** provincia){
+    (*provincia)->size++;
+    (*provincia)->poligonos=realloc((*provincia)->poligonos,(*provincia)->size*sizeof(POLIGONO*));
+    (*provincia)->poligonos[(*provincia)->size-1]=malloc(sizeof(POLIGONO));
+    return &(*provincia)->poligonos[(*provincia)->size-1];
+}
 
+PROVINCIA ** realloc_provincias(){
+    provincias->size++;
+    provincias->provincias=realloc(provincias->provincias,provincias->size * sizeof(PROVINCIA*));
+    provincias->provincias[provincias->size-1]=malloc(sizeof(PROVINCIA));
+    return &provincias->provincias[provincias->size-1];
+}
 
-    obj = json_object_from_file(filename);
-    features = json_object_object_get(obj, "features");
+double leer_numero(){
+    bool init=true;
+    double num=0;
 
-    provincias = malloc(json_object_array_length(features) * sizeof(PROVINCIAS));
-    provincias->size = json_object_array_length(features);
-    provincias->provincias = (PROVINCIA **)malloc(provincias->size * sizeof(PROVINCIA*));
-
-    for (size_t i = 0; i < provincias->size; i++)
-    {
-        obj = json_object_array_get_idx(features, i);
-        nombre = json_object_object_get(obj, "properties");
-        nombre = json_object_object_get(nombre, "provincia");
-        obj = json_object_object_get(obj, "geometry");
-        geometries = json_object_object_get(obj, "coordinates");
-
-        crear_provincia(&provincia,nombre,geometries);
-        for (size_t j = 0; j < provincia->size; j++)
-        {
-            polygon = json_object_array_get_idx(geometries, j);
-            crear_poligono(&poligono,polygon);
-
-            for (size_t k = 0; k < poligono->size; k++)
-            {
-                obj = json_object_array_get_idx(polygon, k);
-                agregar_vertices(&poligono->vertices[k],obj);
-            }
-            provincia->poligonos[j] = poligono;
+    while(get_char_iter()>47 && get_char_iter()<58){
+        if(init){
+            num+=get_char_iter()-48;
+            init=false;
         }
-        
-        provincias->provincias[i] = provincia;
+        else{
+            num*=10;
+            num+=get_char_iter()-48;
+        }
+        inc_iter();
     }
+    if(cmp_iter_char('.')){
+        inc_iter();
+        int decimales=10;
+        
+        while(get_char_iter()>47 && get_char_iter()<58){
+            num+=(double)(get_char_iter()-48)/decimales;
+            decimales*=10;
+            inc_iter();
+        }
+    }
+    return num;
 }
 
-void crear_provincia(PROVINCIA ** provincia,json_object *nombre,json_object *length_geometries){
-    (*provincia) = malloc(sizeof(PROVINCIA));
-    (*provincia)->nombre = (char *)json_object_get_string(nombre);
-    (*provincia)->size = json_object_array_length(length_geometries);
-    (*provincia)->poligonos = (POLIGONO **)malloc((*provincia)->size * sizeof(POLIGONO*));
+void leer_punto(double ** vertice){
+    
+    if(cmp_iter_char('['))
+        inc_iter();
+
+    (*vertice)[0]=leer_numero();// x
+
+    if(cmp_iter_char(','))
+        inc_iter();
+
+    (*vertice)[1]=leer_numero();// y
+
+    if(cmp_iter_char(']'))
+        inc_iter();
 }
 
-void crear_poligono(POLIGONO ** poligono,json_object *length_vertices){
-    (*poligono) = malloc(sizeof(POLIGONO));
-    (*poligono)->size = json_object_array_length(length_vertices);
-    (*poligono)->vertices = (double **)malloc((*poligono)->size * sizeof(double *));
+void leer_poligonos_triangulares(POLIGONO ** poligono){
+    (*poligono)->size=0;
+    (*poligono)->vertices=(double**)malloc((*poligono)->size*sizeof(double*));
+    
+    inc_iter();
+    do
+    {
+        leer_punto(realloc_vertices(poligono));
+        if(cmp_iter_char(','))
+            inc_iter();
+    } while (!cmp_iter_char(']'));
+    inc_iter();//    ]
 }
 
-void agregar_vertices(double ** vertice,json_object *json_vertice){
-    (*vertice) = (double *)malloc(2 * sizeof(double));
-    (*vertice)[0] = json_object_get_double(json_object_array_get_idx(json_vertice, 0));
-    (*vertice)[1] = json_object_get_double(json_object_array_get_idx(json_vertice, 1));
+void leer_provincia(){
+    if(cmp_iter_char('{')){
+
+        
+        PROVINCIA ** provincia=realloc_provincias();
+        
+        inc_iter();
+
+        (*provincia)->numero=(int)leer_numero();
+        (*provincia)->size=0;
+        (*provincia)->poligonos=malloc(0);
+        
+        inc_iter();
+
+        if(cmp_iter_char('[')){//geometria
+            inc_iter();
+            do
+            {
+                leer_poligonos_triangulares(realloc_poligonos(provincia));
+                if(cmp_iter_char(',')){
+                    inc_iter();
+                }
+            } while (!cmp_iter_char(']'));
+            inc_iter();//    ]
+        }
+    }
+    //if(cmp_iter_char('}'))
+    inc_iter();
+}
+
+void cargarProvincias(const char *filename){
+    int size=0;
+    char* original=read_file(filename,&size);
+    asignar_iter(original,size);
+
+    //INIT
+    provincias=malloc(sizeof(PROVINCIAS));
+    provincias->size=0;
+    provincias->provincias=malloc(0);
+    
+    //LECTURA
+    while(seguir_iter()){      
+        leer_provincia();
+    }
+
+    free(original);
 }

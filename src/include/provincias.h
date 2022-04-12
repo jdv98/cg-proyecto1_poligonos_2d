@@ -7,7 +7,7 @@ typedef struct{
 } POLIGONO;
 
 typedef struct {
-    char * nombre;
+    int numero;
     int size;
     
     POLIGONO ** poligonos;

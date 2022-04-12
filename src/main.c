@@ -10,7 +10,7 @@ void init_buffer();
 
 int main(int argc, char **argv)
 {
-  const char *filename = "geojson/provincias.geojson";
+  const char *filename = "mapa/mapa.txt";
   if (argc < 2 || argc > 2)
   {
     (void)fprintf(stdout, "Usage: %s <resolucion>", argv[0]);
