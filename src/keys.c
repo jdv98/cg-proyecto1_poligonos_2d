@@ -24,7 +24,7 @@ int num = 2;
 double **matriz=NULL;
 int matriz_size = 0;
 
-void dibujar_mapa(double ** vertices);
+void dibujar_mapa(double ** vertices,int size);
 void print();
 void reset();
 void aum_velocidad();
@@ -81,7 +81,7 @@ void * teclaPresionada(void *vargp){
             else if(u_d==2)
               poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] - num;
           }
-          dibujar_mapa(provincia_iter->poligonos[j]->vertices);
+          dibujar_mapa(provincia_iter->poligonos[j]->vertices,provincia_iter->poligonos[j]->size);
         }
     }
     glutPostRedisplay();
@@ -220,9 +220,9 @@ void free_matriz(double ***matriz, int *matriz_size)
   (*matriz_size) = 0;
 }
 
-void dibujar_mapa(double ** vertices)
+void dibujar_mapa(double ** vertices,int size)
 {
-  clipping_poligono(vertices, &matriz, &matriz_size);
+  clipping_poligono(vertices,size, &matriz, &matriz_size);
   if (matriz_size)
   {
     for (size_t z = 0; z < matriz_size - 1; z++)

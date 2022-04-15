@@ -12,6 +12,6 @@
 #include "vertices.h"
 /***************************/
 
-void clipping_poligono(double **vertices,double *** nuevo_vertice,int * nuevo_vertice_size);
+void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int * nuevo_vertice_size);
 
 #endif

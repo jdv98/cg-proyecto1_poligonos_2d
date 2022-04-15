@@ -1,9 +1,5 @@
 #include "include/clipping.h"
 
-Vertices *poligono;
-
-double t0, t1, xdelta, ydelta;
-
 /**
  * @brief Inserta un nuevo vertice al anterior al `A` y vinculo `medio` con su homologo en el viewport
  *
@@ -18,10 +14,12 @@ void ins_ant_vert_viewport(Vertices *A, Vertices *medio);
  *
  * @param p
  * @param q
+ * @param t0
+ * @param t1
  * @return true
  * @return false
  */
-bool cond_no_dibujar(double p, double q);
+bool cond_no_dibujar(double p, double q,double * t0, double * t1);
 
 /**
  * @brief Inserta vertices/cortes en el viewport
@@ -57,36 +55,22 @@ void limpiar_memoria_poligono(Vertices *iter);
 /****************************************************************************************/
 /****************************************************************************************/
 
-void printPoligono(Vertices * init){
-    Vertices * iter=init;
-    do
-    {
-        if(iter->no_dibujar)
-            printf("xx ");
-        else if(iter->entrada==1)
-            printf("++ ");
-        else if(iter->entrada==0)
-            printf("-- ");
-        printf("%i,%i\n",(int)iter->x,(int)iter->y);
-        iter=iter->sig;
-    } while (iter!=init);
-    
-}
-
-void clipping_poligono(double **vertices,double *** nuevo_vertice,int * nuevo_vertice_size)
+void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int * nuevo_vertice_size)
 {
     Vertices
         * iterator,
         * primera_entrada,
         * checkPoint,
-        * tmp;
+        * tmp,
+        * poligono;
     reset_viewport();
 
     poligono = malloc(sizeof(Vertices));
 
     iterator = poligono;
 
-    for (size_t i = 0; i < 3; i++)
+
+    for (size_t i = 0; i < size; i++)
     {
         iterator->x = vertices[i][0];
         iterator->y = vertices[i][1];
@@ -94,7 +78,7 @@ void clipping_poligono(double **vertices,double *** nuevo_vertice,int * nuevo_ve
         iterator->no_dibujar = false;
         iterator->vecino = NULL;
 
-        if (i < 2)
+        if (i < size-1)
             iterator->sig = malloc(sizeof(Vertices));
         else
             iterator->sig = poligono;
@@ -108,10 +92,7 @@ void clipping_poligono(double **vertices,double *** nuevo_vertice,int * nuevo_ve
         iterator = liang_barsky_weiler_atherton(iterator);
     } while (iterator!=poligono);
     
-    /*iterator = liang_barsky_weiler_atherton(poligono);
-    iterator = liang_barsky_weiler_atherton(iterator);
-    iterator = liang_barsky_weiler_atherton(iterator);*/
-    
+
     iterator = poligono;
     /**
      * @brief Cambia el primer vertice a uno que sea dibujable en caso de ser necesario.
@@ -201,14 +182,14 @@ void clipping_poligono(double **vertices,double *** nuevo_vertice,int * nuevo_ve
 Vertices *liang_barsky_weiler_atherton(Vertices *entradaPoly)
 {
     Vertices *ultimo = entradaPoly->sig;
-    t0 = 0.0;
-    t1 = 1.0;
-    xdelta = ultimo->x - entradaPoly->x;
-    ydelta = ultimo->y - entradaPoly->y;
-    if (cond_no_dibujar(-xdelta, -(viewport[LB_P].x /*left_edge*/ - entradaPoly->x))      // izquierda
-        || cond_no_dibujar(xdelta, (viewport[RT_P].x /*right_edge*/ - entradaPoly->x))    // derecha
-        || cond_no_dibujar(-ydelta, -(viewport[LB_P].y /*botton_edge*/ - entradaPoly->y)) // abajo
-        || cond_no_dibujar(ydelta, (viewport[RT_P].y /*top_edge*/ - entradaPoly->y))      // arriba
+    double t0 = 0.0;
+    double t1 = 1.0;
+    double xdelta = ultimo->x - entradaPoly->x;
+    double ydelta = ultimo->y - entradaPoly->y;
+    if (cond_no_dibujar(-xdelta, -(viewport[LB_P].x - entradaPoly->x), &t0, &t1)      // izquierda
+        || cond_no_dibujar(xdelta, (viewport[RT_P].x - entradaPoly->x), &t0, &t1)    // derecha
+        || cond_no_dibujar(-ydelta, -(viewport[LB_P].y - entradaPoly->y), &t0, &t1) // abajo
+        || cond_no_dibujar(ydelta, (viewport[RT_P].y - entradaPoly->y), &t0, &t1)      // arriba
         || t0 >= 1.0 || t1 <= 0.0)                                             //
     {
         entradaPoly->no_dibujar = true;
@@ -329,7 +310,7 @@ void insertar_en_viewport(Vertices *medio)
     }
 }
 
-bool cond_no_dibujar(double p, double q)
+bool cond_no_dibujar(double p, double q,double * t0, double *t1)
 {
     double r = q / p;
     if (p == 0 && q < 0)
@@ -337,17 +318,17 @@ bool cond_no_dibujar(double p, double q)
 
     if (p < 0)
     {
-        if (r > t1)
+        if (r > (*t1))
             return true;
-        else if (r > t0)
-            t0 = r;
+        else if (r > (*t0))
+            (*t0) = r;
     }
     else if (p > 0)
     {
-        if (r < t0)
+        if (r < (*t0))
             return true;
-        else if (r < t1)
-            t1 = r;
+        else if (r < (*t1))
+            (*t1) = r;
     }
     return false;
 }
