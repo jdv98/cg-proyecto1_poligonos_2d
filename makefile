@@ -4,13 +4,13 @@ BIN_DIR=bin
 SRC_DIR=src
 
 #Archivos
-FILES = main algoritmo_bresenham keys dibujar cargar_provincias read_file char_iterator
+FILES = main algoritmo_bresenham keys dibujar cargar_provincias read_file char_iterator clipping viewport
 OBJECTS=$(patsubst %, $(OBJ_DIR)/%.o, $(FILES))
 OUTPUT=$(BIN_DIR)/main
 
 ######
 CFLAGS=-I/usr/local/Mesa-3.4/include
-LDLIBS=-lX11 -lglut -lGLU -lGL -lm -lXext -lXmu
+LDLIBS=-lX11 -lglut -lGLU -lGL -lm -lXext -lXmu -lpthread
 LDFLAGS=-L/usr/local/Mesa-3.4/lib -L/usr/X11R6/lib
 
 ######

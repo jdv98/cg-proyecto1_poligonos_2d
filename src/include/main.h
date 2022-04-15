@@ -11,6 +11,7 @@
 #include "keys.h"
 #include "dibujar.h"
 #include "cargar_provincias.h"
+#include "viewport.h"
 /******************/
 
 #endif

@@ -1,6 +1,101 @@
 #include "include/keys.h"
+#include <pthread.h>
+#include <unistd.h>
 
-void dibujar_mapa(int div);
+#include <stdio.h>
+#include <stdlib.h>
+
+pthread_t thread_id;
+pthread_t render_id;
+struct timespec ts;
+
+bool thread_running=false,
+    shitf=false,
+    left_key=false,
+    right_key=false,
+    up_key=false,
+    down_key=false,
+    subir_escala_bool=false,
+    bajar_escala_bool=false;
+
+double escalar = 1.5;
+int num = 2;
+
+double **matriz=NULL;
+int matriz_size = 0;
+
+void dibujar_mapa(double ** vertices);
+void print();
+void reset();
+void aum_velocidad();
+void dis_velocidad();
+
+void * teclaPresionada(void *vargp){
+  if(matriz==NULL)
+    matriz=malloc(0);
+
+    POLIGONO *poligono_iter;
+    PROVINCIA *provincia_iter;
+    int escalar_int=0,r_l=0,u_d=0;
+  
+  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool){
+    usleep(30*1000);
+
+    if(subir_escala_bool) escalar_int=1;
+    else if(bajar_escala_bool) escalar_int=2;
+    else escalar_int=0;
+
+    if(right_key) r_l=1;
+    else if(left_key) r_l=2;
+    else r_l=0;
+
+    if(up_key) u_d=1;
+    else if(down_key) u_d=2;
+    else u_d=0;
+    
+    reset();
+    for (size_t i = 0; i < provincias->size; i++)
+    {
+        provincia_iter = provincias->provincias[i];
+        for (size_t j = 0; j < provincia_iter->size; j++)
+        {
+          poligono_iter = provincia_iter->poligonos[j];
+          for (size_t k = 0; k < poligono_iter->size; k++)
+          {
+            if(escalar_int==1){
+              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] * escalar;
+              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] * escalar;
+            }
+            else if(escalar_int==2){
+              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] / escalar;
+            poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] / escalar;
+            }
+
+            if(r_l==2)
+              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] - num;
+            else if(r_l==1)
+              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] + num;
+            
+            if(u_d==1)
+              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] + num;
+            else if(u_d==2)
+              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] - num;
+          }
+          dibujar_mapa(provincia_iter->poligonos[j]->vertices);
+        }
+    }
+    glutPostRedisplay();
+
+  }
+  thread_running=false;
+}
+
+void init_thread(){
+  if(!thread_running){
+    pthread_create(&thread_id,NULL,teclaPresionada,NULL);
+    thread_running=true;
+  }
+}
 
 void normal_keys(unsigned char key, int x, int y)
 {
@@ -9,9 +104,44 @@ void normal_keys(unsigned char key, int x, int y)
   case 27: // Esc
     exit(0);
     break;
-  
-  case 49:
-    dibujar_mapa(700);
+
+  case 50: // 2
+    bajar_escala_bool=true;
+    init_thread();
+    break;
+
+  case 51: // 3
+    subir_escala_bool=true;
+    init_thread();
+    break;
+
+  case 52: // 4
+    aum_velocidad();
+    break;
+
+  case 53: // 5
+    dis_velocidad();
+    break;
+
+  case 54:
+    print();
+    break;
+
+  default:
+    break;
+  }
+}
+
+void normal_keys_up(unsigned char key,int x, int y){
+  switch (key)
+  {
+
+  case 50: // 2
+    bajar_escala_bool=false;
+    break;
+
+  case 51: // 3
+    subir_escala_bool=false;
     break;
 
   default:
@@ -23,30 +153,119 @@ void special_keys(int key, int x, int y)
 {
   switch (key)
   {
+  case 100:
+    left_key=true;
+    init_thread();
+    break;
+  case 101:
+    up_key=true;
+    init_thread();
+    break;
+  case 102:
+    right_key=true;
+    init_thread();
+    break;
+  case 103:
+    down_key=true;
+    init_thread();
+    break;
   default:
     break;
   }
 }
 
-void dibujar_mapa(int div)
+void special_keys_up(int key,int x, int y){
+  switch (key)
+    {
+    case 100:
+      left_key=false;
+      break;
+    case 101:
+      up_key=false;
+      break;
+    case 102:
+      right_key=false;
+      break;
+    case 103:
+      down_key=false;
+      break;
+    default:
+      break;
+    }
+}
+
+
+
+void reset()
 {
-  int x0, x1, y0, y1;
+  for (int i = 0; i < resolucion; i++)
+  {
+    for (int j = 0; j < resolucion; j++)
+    {
+      buffer[i][j].r = 0.0;
+      buffer[i][j].g = 0.0;
+      buffer[i][j].b = 0.0;
+    }
+  }
+}
+
+void free_matriz(double ***matriz, int *matriz_size)
+{
+  for (size_t i = 0; i < (*matriz_size); i++)
+  {
+    free((*matriz)[i]);
+  }
+  free((*matriz));
+  (*matriz) = malloc(0);
+  (*matriz_size) = 0;
+}
+
+void dibujar_mapa(double ** vertices)
+{
+  clipping_poligono(vertices, &matriz, &matriz_size);
+  if (matriz_size)
+  {
+    for (size_t z = 0; z < matriz_size - 1; z++)
+    {
+      bresenham((int)matriz[z][0], (int)matriz[z][1], (int)matriz[z + 1][0], (int)matriz[z + 1][1], color_mapa);
+    }
+    free_matriz(&matriz, &matriz_size);
+  }
+}
+
+void print()
+{
+  POLIGONO *poligono_iter;
+  PROVINCIA *provincia_iter;
 
   for (size_t i = 0; i < provincias->size; i++)
   {
-    PROVINCIA * provincia_iter = provincias->provincias[i];
+    provincia_iter = provincias->provincias[i];
     for (size_t j = 0; j < provincia_iter->size; j++)
     {
-      POLIGONO * poligono_iter = provincia_iter->poligonos[j];
-      for (size_t k = 0; k < poligono_iter->size - 1; k++)
+      poligono_iter = provincia_iter->poligonos[j];
+
+      for (size_t k = 0; k < poligono_iter->size; k++)
       {
-        x0 = (int)(poligono_iter->vertices[k][0] / div);
-        y0 = (int)(poligono_iter->vertices[k][1] / div);
-        x1 = (int)(poligono_iter->vertices[k + 1][0] / div);
-        y1 = (int)(poligono_iter->vertices[k + 1][1] / div);
-        bresenham(x0, y0, x1, y1, color_mapa);
+        system("clear");
+        printf("poligono >> %lf %lf\n", poligono_iter->vertices[k][0], poligono_iter->vertices[k][1]);
+        return;
       }
     }
   }
-  glutPostRedisplay();
+}
+
+void aum_velocidad()
+{
+  system("clear");
+  num += num;
+  printf("num>> %i\n", num);
+}
+
+void dis_velocidad()
+{
+  if (num > 2)
+    num -= (int)num / 2;
+  system("clear");
+  printf("num>> %i\n", num);
 }

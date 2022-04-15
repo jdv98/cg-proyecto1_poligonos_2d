@@ -8,10 +8,13 @@
 
 /******************/
 #include "provincias.h"
-#include "algoritmo_bresenham.h"
+#include "viewport.h"
+#include "clipping.h"
 /******************/
 
 void normal_keys(unsigned char key, int x, int y);
 void special_keys(int key, int x, int y);
+void normal_keys_up(unsigned char key, int x, int y);
+void special_keys_up(int key, int x, int y);
 
 #endif

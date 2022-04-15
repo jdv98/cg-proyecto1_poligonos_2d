@@ -24,6 +24,7 @@ int main(int argc, char **argv)
   cargarProvincias(filename);
   init_colors();
   init_buffer();
+  init_viewport(10,10,resolucion-1,resolucion-1);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -31,9 +32,12 @@ int main(int argc, char **argv)
   glutCreateWindow("Proyecto 1 - Poligonos 2D");
   glClear(GL_COLOR_BUFFER_BIT);
   gluOrtho2D(0, resolucion, 0, resolucion);
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
   glutDisplayFunc(draw_scene);
   glutKeyboardFunc(normal_keys);
+  glutKeyboardUpFunc(normal_keys_up);
   glutSpecialFunc(special_keys);
+  glutSpecialUpFunc(special_keys_up);
   glutMainLoop();
 }
 
