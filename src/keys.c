@@ -45,13 +45,31 @@ void * teclaPresionada(void *vargp){
     else if(bajar_escala_bool) escalar_int=2;
     else escalar_int=0;
 
-    if(right_key) r_l=1;
-    else if(left_key) r_l=2;
-    else r_l=0;
+    if(right_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x+num,viewport[LB_P].y,
+        viewport[RT_P].x+num,viewport[RT_P].y
+      );
+    }
+    else if(left_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x-num,viewport[LB_P].y,
+        viewport[RT_P].x-num,viewport[RT_P].y
+      );
+    }
 
-    if(up_key) u_d=1;
-    else if(down_key) u_d=2;
-    else u_d=0;
+    if(up_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x,viewport[LB_P].y+num,
+        viewport[RT_P].x,viewport[RT_P].y+num
+      );
+    }
+    else if(down_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x,viewport[LB_P].y-num,
+        viewport[RT_P].x,viewport[RT_P].y-num
+      );
+    }
     
     reset();
     for (size_t i = 0; i < provincias->size; i++)
@@ -70,16 +88,6 @@ void * teclaPresionada(void *vargp){
               poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] / escalar;
             poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] / escalar;
             }
-
-            if(r_l==2)
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] - num;
-            else if(r_l==1)
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] + num;
-            
-            if(u_d==1)
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] + num;
-            else if(u_d==2)
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] - num;
           }
           dibujar_mapa(provincia_iter->poligonos[j]->vertices,provincia_iter->poligonos[j]->size);
         }
@@ -249,6 +257,9 @@ void print()
       {
         system("clear");
         printf("poligono >> %lf %lf\n", poligono_iter->vertices[k][0], poligono_iter->vertices[k][1]);
+        
+        printf("clipping >> %lf %lf %lf %lf\n",viewport[LB_P].x,viewport[LB_P].y,viewport[RT_P].x,viewport[RT_P].y);
+        
         return;
       }
     }

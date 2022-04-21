@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   cargarProvincias(filename);
   init_colors();
   init_buffer();
-  init_viewport(10,10,resolucion-1,resolucion-1);
+  init_viewport(0,0,resolucion-1,resolucion-1);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
