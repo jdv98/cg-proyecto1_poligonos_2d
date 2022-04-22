@@ -47,7 +47,6 @@ double **trasladar_matriz(double t_x, double t_y);
  */
 double **zoom_matriz(double z, double xc, double yc);
 
-
 /**
  * @brief Multiplica 2 matrices y guarda el resultado en la primera matriz
  * 
@@ -58,6 +57,27 @@ double **zoom_matriz(double z, double xc, double yc);
  * @param r2 
  * @param c2 
  */
-void matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2);
+void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2);
+
+/**
+ * @brief Multiplica 2 matrices y retorna la matriz resultante
+ * 
+ * @param matriz1 
+ * @param r1 
+ * @param c1 
+ * @param matriz2 
+ * @param r2 
+ * @param c2 
+ * @return double** 
+ */
+double ** matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2);
+
+/**
+ * @brief Libera la memoria de la matriz
+ * 
+ * @param matriz 
+ * @param column 
+ */
+void free_matriz(double *** matriz, int column);
 
 #endif

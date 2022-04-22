@@ -65,7 +65,7 @@ double **zoom_matriz(double z, double xc, double yc)
     return matriz;
 }
 
-void matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2)
+void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2)
 {
     double **result;
 
@@ -82,8 +82,39 @@ void matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, in
                 }                
             }
         }
-        free((*matriz1));
-        (*matriz1)=NULL;
+        free_matriz(matriz1,c1);
         (*matriz1)=result;
     }
+}
+
+double ** matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2)
+{
+    double **result=NULL;
+
+    if (c1 == r2)
+    {
+        result = matriz_init(r1, c2, false);
+        for (size_t row = 0; row < r1; row++)
+        {
+            for (size_t column = 0; column < c2; column++)
+            {
+                for (size_t i = 0; i < c1; i++)
+                {
+                    result[row][column]+=(*matriz1)[row][i]*(*matriz2)[i][column];
+                }                
+            }
+        }
+    }
+    return result;
+}
+
+void free_matriz(double *** matriz,int column){
+    for (size_t i = 0; i < column; i++)
+    {
+        free((*matriz)[i]);
+        (*matriz)[i]=NULL;
+    }
+    
+    free((*matriz));
+    (*matriz)=NULL;
 }
