@@ -21,18 +21,11 @@ bool thread_running=false,
 double escalar = 1.5;
 int num = 2;
 
-double **matriz=NULL;
-int matriz_size = 0;
-
-void dibujar_mapa(double ** vertices,int size);
 void print();
-void reset();
 void aum_velocidad();
 void dis_velocidad();
 
 void * teclaPresionada(void *vargp){
-  if(matriz==NULL)
-    matriz=malloc(0);
 
     POLIGONO *poligono_iter;
     PROVINCIA *provincia_iter;
@@ -45,15 +38,31 @@ void * teclaPresionada(void *vargp){
     else if(bajar_escala_bool) escalar_int=2;
     else escalar_int=0;
 
-    if(right_key) r_l=1;
-    else if(left_key) r_l=2;
-    else r_l=0;
+    if(right_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x+num,viewport[LB_P].y,
+        viewport[RT_P].x+num,viewport[RT_P].y
+      );
+    }
+    else if(left_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x-num,viewport[LB_P].y,
+        viewport[RT_P].x-num,viewport[RT_P].y
+      );
+    }
 
-    if(up_key) u_d=1;
-    else if(down_key) u_d=2;
-    else u_d=0;
-    
-    reset();
+    if(up_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x,viewport[LB_P].y+num,
+        viewport[RT_P].x,viewport[RT_P].y+num
+      );
+    }
+    else if(down_key){
+      asignar_valor_viewport(
+        viewport[LB_P].x,viewport[LB_P].y-num,
+        viewport[RT_P].x,viewport[RT_P].y-num
+      );
+    }
     for (size_t i = 0; i < provincias->size; i++)
     {
         provincia_iter = provincias->provincias[i];
@@ -70,22 +79,10 @@ void * teclaPresionada(void *vargp){
               poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] / escalar;
             poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] / escalar;
             }
-
-            if(r_l==2)
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] - num;
-            else if(r_l==1)
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] + num;
-            
-            if(u_d==1)
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] + num;
-            else if(u_d==2)
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] - num;
           }
-          dibujar_mapa(provincia_iter->poligonos[j]->vertices,provincia_iter->poligonos[j]->size);
         }
     }
     glutPostRedisplay();
-
   }
   thread_running=false;
 }
@@ -104,7 +101,7 @@ void normal_keys(unsigned char key, int x, int y)
   case 27: // Esc
     exit(0);
     break;
-
+  
   case 50: // 2
     bajar_escala_bool=true;
     init_thread();
@@ -123,7 +120,7 @@ void normal_keys(unsigned char key, int x, int y)
     dis_velocidad();
     break;
 
-  case 54:
+  case 54: // 6
     print();
     break;
 
@@ -194,45 +191,6 @@ void special_keys_up(int key,int x, int y){
     }
 }
 
-
-
-void reset()
-{
-  for (int i = 0; i < resolucion; i++)
-  {
-    for (int j = 0; j < resolucion; j++)
-    {
-      buffer[i][j].r = 0.0;
-      buffer[i][j].g = 0.0;
-      buffer[i][j].b = 0.0;
-    }
-  }
-}
-
-void free_matriz(double ***matriz, int *matriz_size)
-{
-  for (size_t i = 0; i < (*matriz_size); i++)
-  {
-    free((*matriz)[i]);
-  }
-  free((*matriz));
-  (*matriz) = malloc(0);
-  (*matriz_size) = 0;
-}
-
-void dibujar_mapa(double ** vertices,int size)
-{
-  clipping_poligono(vertices,size, &matriz, &matriz_size);
-  if (matriz_size)
-  {
-    for (size_t z = 0; z < matriz_size - 1; z++)
-    {
-      bresenham((int)matriz[z][0], (int)matriz[z][1], (int)matriz[z + 1][0], (int)matriz[z + 1][1], color_mapa);
-    }
-    free_matriz(&matriz, &matriz_size);
-  }
-}
-
 void print()
 {
   POLIGONO *poligono_iter;
@@ -249,6 +207,9 @@ void print()
       {
         system("clear");
         printf("poligono >> %lf %lf\n", poligono_iter->vertices[k][0], poligono_iter->vertices[k][1]);
+        
+        printf("clipping >> %lf %lf %lf %lf\n",viewport[LB_P].x,viewport[LB_P].y,viewport[RT_P].x,viewport[RT_P].y);
+        
         return;
       }
     }

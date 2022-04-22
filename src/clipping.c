@@ -55,6 +55,11 @@ void limpiar_memoria_poligono(Vertices *iter);
 /****************************************************************************************/
 /****************************************************************************************/
 
+void clipping_a_pantalla(double ** xy,double x,double y){
+    (*xy)[0]=(resolucion-1)*((x-viewport[LB_P].x)/(viewport[RT_P].x-viewport[LB_P].x));
+    (*xy)[1]=(resolucion-1)*((y-viewport[LB_P].y)/(viewport[RT_P].y-viewport[LB_P].y));
+}
+
 void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int * nuevo_vertice_size)
 {
     Vertices
@@ -142,8 +147,7 @@ void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int *
         (*nuevo_vertice_size)++;
         (*nuevo_vertice)=realloc((*nuevo_vertice),(*nuevo_vertice_size)*sizeof(double*));
         (*nuevo_vertice)[(*nuevo_vertice_size)-1]=malloc(2*sizeof(double));
-        (*nuevo_vertice)[(*nuevo_vertice_size)-1][0]=primera_entrada->x;
-        (*nuevo_vertice)[(*nuevo_vertice_size)-1][1]=primera_entrada->y;
+        clipping_a_pantalla(&(*nuevo_vertice)[(*nuevo_vertice_size)-1],primera_entrada->x,primera_entrada->y);
         /**/
 
         //bresenham((int)primera_entrada->x, (int)primera_entrada->y, (int)primera_entrada->sig->x, (int)primera_entrada->sig->y, color_mapa);
@@ -174,8 +178,7 @@ void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int *
     (*nuevo_vertice_size)++;
     (*nuevo_vertice)=realloc((*nuevo_vertice),(*nuevo_vertice_size)*sizeof(double*));
     (*nuevo_vertice)[(*nuevo_vertice_size)-1]=malloc(2*sizeof(double));
-    (*nuevo_vertice)[(*nuevo_vertice_size)-1][0]=checkPoint->x;
-    (*nuevo_vertice)[(*nuevo_vertice_size)-1][1]=checkPoint->y;
+    clipping_a_pantalla(&(*nuevo_vertice)[(*nuevo_vertice_size)-1],primera_entrada->x,primera_entrada->y);
     limpiar_memoria_poligono(poligono);
 }
 

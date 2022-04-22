@@ -19,6 +19,7 @@
 
 extern Vertices * viewport;
 
+void asignar_valor_viewport(double left, double bottom, double right, double top);
 void init_viewport(double left, double bottom, double right, double top);
 void reset_viewport();
 

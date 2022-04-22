@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   cargarProvincias(filename);
   init_colors();
   init_buffer();
-  init_viewport(10,10,resolucion-1,resolucion-1);
+  init_viewport(0,0,resolucion-1,resolucion-1);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -43,18 +43,19 @@ int main(int argc, char **argv)
 
 void draw_scene()
 {
+  dibujar_mapa();
   int i, j;
+  
+  glBegin(GL_POINTS);
   for (i = 0; i < resolucion; i++)
   {
     for (j = 0; j < resolucion; j++)
     {
       glColor3f(buffer[i][j].r, buffer[i][j].g, buffer[i][j].b);
-      glBegin(GL_POINTS);
       glVertex2i(i, j);
-      glEnd();
     }
   }
-
+  glEnd();
   glFlush();
 }
 
