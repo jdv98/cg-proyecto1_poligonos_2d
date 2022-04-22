@@ -15,6 +15,7 @@ typedef struct {
 
 typedef struct {
     int size;
+    double ** log_cambios_matriz;
     PROVINCIA ** provincias;
 } PROVINCIAS;
 
