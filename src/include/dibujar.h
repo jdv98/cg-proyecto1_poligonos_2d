@@ -9,13 +9,19 @@ typedef struct {
   double b;
 } COLOR;
 
+typedef struct {
+  COLOR ** pixeles;
+  int height;
+  int width;
+} TEXTURA;
+
+
 extern COLOR **buffer;
 extern COLOR *color_mapa;
 
 extern int resolucion;
 
 void dibujar(int x, int y, COLOR * color);
-void dibujar_poligono(double **vertices, int size);
 
 #include "algoritmo_bresenham.h"
 #include "provincias.h"

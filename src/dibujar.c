@@ -20,16 +20,16 @@ void free_matriz_dibujo(double ***matriz, int *matriz_size)
     (*matriz_size) = 0;
 }
 
-void dibujar_poligono(double **vertices, int size)
+void dibujar_poligono(POLIGONO *poligono,COLOR ** color_mapa, COLOR ** relleno_mapa, COLOR *** textura)
 {
     if (matriz_dibujo == NULL)
         matriz_dibujo = malloc(0);
-    clipping_poligono(vertices, size, &matriz_dibujo, &matriz_size);
+    clipping_poligono(poligono->vertices, poligono->size, &matriz_dibujo, &matriz_size);
     if (matriz_size)
     {
         for (size_t z = 0; z < matriz_size - 1; z++)
         {
-            bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], color_mapa);
+            bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], (*color_mapa));
         }
         //
              rellenado_Poligono(&matriz_dibujo,&matriz_size,NULL,NULL);
@@ -63,7 +63,7 @@ void dibujar_mapa()
         for (size_t j = 0; j < provincia_iter->size; j++)
         {
             poligono_iter = provincia_iter->poligonos[j];
-            dibujar_poligono(provincia_iter->poligonos[j]->vertices, provincia_iter->poligonos[j]->size);
+            dibujar_poligono(provincia_iter->poligonos[j],&provincia_iter->color_mapa, &provincia_iter->relleno_mapa, &provincia_iter->textura);
         }
     }
 }

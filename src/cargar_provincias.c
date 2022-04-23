@@ -1,5 +1,25 @@
 #include "include/cargar_provincias.h"
 
+double lineas[][3]={
+    {239, 83, 80},
+    {171, 71, 188},
+    {66, 165, 245},
+    {38, 198, 218},
+    {102, 187, 106},
+    {255, 238, 88},
+    {255, 167, 38}
+};
+
+double rellenado[][3]={
+    {255, 235, 238},
+    {243, 229, 245},
+    {227, 242, 253},
+    {224, 247, 250},
+    {232, 245, 233},
+    {255, 253, 231},
+    {236, 239, 241}
+};
+
 PROVINCIAS *provincias;
 
 double ** realloc_vertices(POLIGONO ** poligono){
@@ -21,6 +41,30 @@ PROVINCIA ** realloc_provincias(){
     provincias->provincias=realloc(provincias->provincias,provincias->size * sizeof(PROVINCIA*));
     provincias->provincias[provincias->size-1]=malloc(sizeof(PROVINCIA));
     return &provincias->provincias[provincias->size-1];
+}
+
+void cargar_color(PROVINCIA ** provincia){
+    (*provincia)->color_mapa=malloc(sizeof(COLOR));
+    (*provincia)->color_mapa->r=lineas[(*provincia)->numero-1][0]/255;
+    (*provincia)->color_mapa->g=lineas[(*provincia)->numero-1][1]/255;
+    (*provincia)->color_mapa->b=lineas[(*provincia)->numero-1][2]/255;
+
+    //////
+
+    (*provincia)->relleno_mapa=malloc(sizeof(COLOR));
+    (*provincia)->relleno_mapa->r=rellenado[(*provincia)->numero-1][0]/255;
+    (*provincia)->relleno_mapa->g=rellenado[(*provincia)->numero-1][1]/255;
+    (*provincia)->relleno_mapa->b=rellenado[(*provincia)->numero-1][2]/255;
+
+    //////
+
+    char * nombre=malloc(sizeof(char)*(25));
+    sprintf(nombre, "texturas/%i.avs", (*provincia)->numero);
+
+    (*provincia)->textura=malloc(sizeof(TEXTURA));
+    cargar_textura(nombre,&(*provincia)->textura->pixeles,&(*provincia)->textura->height,&(*provincia)->textura->width);
+
+    free(nombre);
 }
 
 double leer_numero(){
@@ -90,6 +134,7 @@ void leer_provincia(){
         inc_iter();
 
         (*provincia)->numero=(int)leer_numero();
+        cargar_color(provincia);
         (*provincia)->size=0;
         (*provincia)->poligonos=malloc(0);
         
