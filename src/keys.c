@@ -124,6 +124,21 @@ void normal_keys(unsigned char key, int x, int y)
     print();
     break;
 
+  case 56: // 8
+    DIBUJAR_RELLENO=true;
+    DIBUJAR_TEXTURA=false;
+    break;
+
+  case 57: // 9
+    DIBUJAR_RELLENO=false;
+    DIBUJAR_TEXTURA=true;
+    break;
+
+  case 48: // 0
+    DIBUJAR_RELLENO=false;
+    DIBUJAR_TEXTURA=false;
+    break;
+
   default:
     break;
   }

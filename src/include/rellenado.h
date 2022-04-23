@@ -3,6 +3,6 @@
 
 #include "dibujar.h"
 
-void rellenado_Poligono(double ***matriz, int *size,COLOR *color,double ***textura);
+void rellenado_Poligono(double ***matriz, int *size,COLOR *color,TEXTURA **textura);
 
 #endif

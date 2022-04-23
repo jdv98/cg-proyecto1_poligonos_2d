@@ -5,7 +5,6 @@ int matriz_size = 0;
 
 void dibujar(int x, int y, COLOR *color)
 {   
-    //if(x>-1 && x<resolucion)
     buffer[x][y] = (COLOR)*color;
 }
 
@@ -20,19 +19,21 @@ void free_matriz_dibujo(double ***matriz, int *matriz_size)
     (*matriz_size) = 0;
 }
 
-void dibujar_poligono(POLIGONO *poligono,COLOR ** color_mapa, COLOR ** relleno_mapa, COLOR *** textura)
+void dibujar_poligono(POLIGONO *poligono,COLOR ** color_mapa, COLOR ** relleno_mapa, TEXTURA ** textura)
 {
     if (matriz_dibujo == NULL)
         matriz_dibujo = malloc(0);
     clipping_poligono(poligono->vertices, poligono->size, &matriz_dibujo, &matriz_size);
     if (matriz_size)
     {
+
         for (size_t z = 0; z < matriz_size - 1; z++)
         {
             bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], (*color_mapa));
         }
         //
-             rellenado_Poligono(&matriz_dibujo,&matriz_size,NULL,NULL);
+        if(DIBUJAR_RELLENO || DIBUJAR_TEXTURA)
+            rellenado_Poligono(&matriz_dibujo,&matriz_size,(*color_mapa),textura);
         //
         free_matriz_dibujo(&matriz_dibujo, &matriz_size);
     }
@@ -59,7 +60,6 @@ void dibujar_mapa()
     for (size_t i = 0; i < provincias->size; i++)
     {
         provincia_iter = provincias->provincias[i];
-        //if(provincia_iter->numero==6)
         for (size_t j = 0; j < provincia_iter->size; j++)
         {
             poligono_iter = provincia_iter->poligonos[j];

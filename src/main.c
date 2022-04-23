@@ -4,6 +4,9 @@ COLOR **buffer;
 COLOR *color_mapa;
 
 int resolucion;
+bool DIBUJAR_TEXTURA=false;
+bool DIBUJAR_RELLENO=false;
+
 void draw_scene();
 void init_colors();
 void init_buffer();
