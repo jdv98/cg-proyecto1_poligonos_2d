@@ -65,6 +65,14 @@ double **zoom_matriz(double z, double xc, double yc)
     return matriz;
 }
 
+double **escalar_matriz(double sx, double sy)
+{
+    double **matriz = matriz_init(3, 3, true);
+    matriz [0][0] = sx;
+    matriz [1][1] = sy;
+    return matriz;
+}
+
 void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2)
 {
     double **result;
@@ -83,6 +91,29 @@ void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, 
             }
         }
         free_matriz(matriz1,c1);
+        (*matriz1)=result;
+    }
+}
+
+void matriz_mul_r_dos (double ***matriz1, int fila1, int colu1, double ***matriz2, int fila2, int colu2)
+{
+    double **result;
+
+    if (colu1 == fila2)
+    {
+        result = matriz_init (fila1, colu2, false);
+        for (size_t row = 0; row < fila1; row++) // Filas de la matriz operador y columnas de matriz a operar.
+        {
+            for (size_t column = 0; column < colu2; column++)
+            {
+                for (size_t i = 0; i < colu2; i++)
+                {
+                    
+                    result[column][row]+=(*matriz1)[i][row]*(*matriz2)[column][i];
+                }                
+            }
+        }
+        free_matriz(matriz1, colu1);
         (*matriz1)=result;
     }
 }

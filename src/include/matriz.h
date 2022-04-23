@@ -48,6 +48,15 @@ double **trasladar_matriz(double t_x, double t_y);
 double **zoom_matriz(double z, double xc, double yc);
 
 /**
+ * @brief Matriz escalar
+ * 
+ * @param sx //Estos son los valores que van a multiplicar a las x
+ * @param sy //y estos a las y.
+ * @return double** 
+ */
+double **escalar_matriz(double sx, double sy);
+
+/**
  * @brief Multiplica 2 matrices y guarda el resultado en la primera matriz
  * 
  * @param matriz1 
@@ -58,6 +67,20 @@ double **zoom_matriz(double z, double xc, double yc);
  * @param c2 
  */
 void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2);
+
+/**
+ * @brief Multiplica 2 matrices y guarda el resultado en la primera matriz
+ *      //Segunda vercion.
+ * 
+ * @param matriz1 
+ * @param fila1 
+ * @param colu1 
+ * @param matriz2 
+ * @param fila2 
+ * @param colu2 
+ */
+void matriz_mul_r_dos(double ***matriz1, int fila1, int colu1, double ***matriz2, int fila2, int colu2);
+
 
 /**
  * @brief Multiplica 2 matrices y retorna la matriz resultante
