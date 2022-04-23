@@ -19,5 +19,6 @@ void dibujar_poligono(double **vertices, int size);
 
 #include "algoritmo_bresenham.h"
 #include "provincias.h"
+#include "rellenado.h"
 
 #endif

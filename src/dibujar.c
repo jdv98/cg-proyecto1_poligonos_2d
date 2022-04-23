@@ -4,7 +4,8 @@ double **matriz_dibujo = NULL;
 int matriz_size = 0;
 
 void dibujar(int x, int y, COLOR *color)
-{
+{   
+    //if(x>-1 && x<resolucion)
     buffer[x][y] = (COLOR)*color;
 }
 
@@ -30,6 +31,9 @@ void dibujar_poligono(double **vertices, int size)
         {
             bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], color_mapa);
         }
+        //
+             rellenado_Poligono(&matriz_dibujo,&matriz_size,NULL,NULL);
+        //
         free_matriz_dibujo(&matriz_dibujo, &matriz_size);
     }
 }
@@ -55,6 +59,7 @@ void dibujar_mapa()
     for (size_t i = 0; i < provincias->size; i++)
     {
         provincia_iter = provincias->provincias[i];
+        //if(provincia_iter->numero==6)
         for (size_t j = 0; j < provincia_iter->size; j++)
         {
             poligono_iter = provincia_iter->poligonos[j];
