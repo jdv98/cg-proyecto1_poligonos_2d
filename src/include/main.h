@@ -12,6 +12,7 @@
 #include "dibujar.h"
 #include "cargar_provincias.h"
 #include "viewport.h"
+#include "matriz.h"
 /******************/
 
 #endif

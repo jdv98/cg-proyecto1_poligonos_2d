@@ -7,6 +7,7 @@ int resolucion;
 void draw_scene();
 void init_colors();
 void init_buffer();
+void prueba();
 
 int main(int argc, char **argv)
 {
@@ -34,10 +35,15 @@ int main(int argc, char **argv)
   gluOrtho2D(0, resolucion, 0, resolucion);
   glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
   glutDisplayFunc(draw_scene);
+  
+  glutDisplayFunc(prueba);
+
+  /*
   glutKeyboardFunc(normal_keys);
   glutKeyboardUpFunc(normal_keys_up);
   glutSpecialFunc(special_keys);
   glutSpecialUpFunc(special_keys_up);
+  */
   glutMainLoop();
 }
 
@@ -86,4 +92,16 @@ void init_buffer(){
       buffer[i][j].b = 0.0;
     }
   }
+}
+
+void prueba () {
+
+  double ** m_pt1 = matriz_init (1,3,false);
+  double ** m_pt2 = matriz_init (1,3,false);
+  m_pt1 [0][0] = 300; m_pt1 [0][1] = 30; m_pt1 [0][2] = 1;
+  m_pt2 [0][0] = 600; m_pt2 [0][1] = 30; m_pt2 [0][2] = 1;
+  //bresenham ((int) m_pt1[0][0], (int) m_pt1[0][1], (int) m_pt2[0][0],(int) m_pt2[0][1], color_mapa);
+  bresenham (m_pt1[0][0], m_pt1[0][1], m_pt2[0][0], m_pt2[0][1], color_mapa);
+  bresenham (30, 300, 600, 600, color_mapa);
+  printf("Ya se puede entrar prro");
 }

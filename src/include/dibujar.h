@@ -17,6 +17,8 @@ extern int resolucion;
 void dibujar(int x, int y, COLOR * color);
 void dibujar_poligono(double **vertices, int size);
 
+void dibujar_mapa();
+
 #include "algoritmo_bresenham.h"
 #include "provincias.h"
 
