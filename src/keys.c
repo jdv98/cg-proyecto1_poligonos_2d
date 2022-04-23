@@ -1,3 +1,4 @@
+#include "include/transformaciones.h"
 #include "include/keys.h"
 #include <pthread.h>
 #include <unistd.h>
@@ -100,6 +101,10 @@ void normal_keys(unsigned char key, int x, int y)
   {
   case 27: // Esc
     exit(0);
+    break;
+  
+  case 49: // 1
+    rotar();
     break;
   
   case 50: // 2

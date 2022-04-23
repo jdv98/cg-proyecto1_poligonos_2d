@@ -5,6 +5,7 @@
 #include "char_iterator.h"
 #include "read_file.h"
 #include "provincias.h"
+#include "matriz.h"
 
 void cargarProvincias(const char *filename);
 
