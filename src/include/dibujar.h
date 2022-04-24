@@ -20,7 +20,8 @@ typedef struct {
 extern COLOR **buffer;
 extern COLOR *color_mapa;
 
-extern int resolucion;
+extern int RESOLUCION_H;
+extern int RESOLUCION_W;
 
 extern bool DIBUJAR_TEXTURA;
 extern bool DIBUJAR_RELLENO;

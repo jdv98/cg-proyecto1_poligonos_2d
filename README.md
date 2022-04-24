@@ -3,6 +3,10 @@
 
 ## Uso
 
+```bash
+Usage: ./aplicacion <resolucion> <width> <height>
+```
+
 ## Mapa
 |Tecla|Función|
 |---|---|
@@ -25,10 +29,16 @@
 | <kbd>z</kbd>  | zoom in |
 | <kbd>Z</kbd>  | zoom out |
 | <kbd>Shift</kbd>+<kbd>Backspace</kbd>  | reset |
+
+
+## General
+
+|Tecla|Función|
+|---|---|
 | <kbd>Esc</kbd>  | Salir |
 
 ## Requerimientos
 
 |Nombre|Version|
 |---|---|
-|[json-c](https://json-c.github.io/json-c/)|0.15|
+|ImageMagick|7.1.0-25|
