@@ -22,6 +22,42 @@ double rellenado[][3]={
 
 PROVINCIAS *provincias;
 
+
+
+void invertir_numeros(double * a, double *b){
+    (*a)+=(*b);
+    (*b)=(*a)-(*b);
+    (*a)-=(*b);
+}
+
+void verificar_orientacion_poligonos(){
+    POLIGONO *poligono_iter;
+    PROVINCIA *provincia_iter;
+    for (size_t i = 0; i < provincias->size; i++)
+    {
+        provincia_iter = provincias->provincias[i];
+        for (size_t j = 0; j < provincia_iter->size; j++)
+        {
+            poligono_iter = provincia_iter->poligonos[j];
+            if(poligono_iter->size==3){
+
+                if(
+                    (((poligono_iter->vertices[1][0]-poligono_iter->vertices[0][0])
+                    *(poligono_iter->vertices[2][1]-poligono_iter->vertices[0][1]))-
+                    ((poligono_iter->vertices[2][0]-poligono_iter->vertices[0][0])
+                    *(poligono_iter->vertices[1][1]-poligono_iter->vertices[0][1])))>0
+                ){
+                    invertir_numeros(&poligono_iter->vertices[1][0]
+                                    ,&poligono_iter->vertices[2][0]);
+
+                    invertir_numeros(&poligono_iter->vertices[1][1]
+                                    ,&poligono_iter->vertices[2][1]);
+                }
+            }
+        }
+    }
+}
+
 double ** realloc_vertices(POLIGONO ** poligono){
     (*poligono)->size++;
     (*poligono)->vertices=realloc((*poligono)->vertices,(*poligono)->size*sizeof(double*));
@@ -172,5 +208,6 @@ void cargarProvincias(const char *filename){
         leer_provincia();
     }
 
+    verificar_orientacion_poligonos();
     free(original);
 }
