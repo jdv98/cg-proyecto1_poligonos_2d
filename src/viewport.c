@@ -1,5 +1,7 @@
 #include "include/viewport.h"
+#include "include/matriz.h"
 
+double ** viewport_log_cambios;
 Vertices * viewport;
 
 void asignar_valor(Vertices * vert,double x, double y){
@@ -29,7 +31,7 @@ void reset_vertices(Vertices * medio,Vertices * ant,Vertices * sig){
     medio->sig = sig;
 }
 
-void reset_viewport()
+void reset_viewport_list()
 {
     reset_vertices(&viewport[LB_P],&viewport[RB_P],&viewport[LT_P]);
     reset_vertices(&viewport[LT_P],&viewport[LB_P],&viewport[RT_P]);
@@ -50,4 +52,6 @@ void init_viewport(double left, double bottom, double right, double top)
 {
     viewport=malloc(4*sizeof(Vertices));
     asignar_valor_viewport(left, bottom, right, top);
+
+    viewport_log_cambios=matriz_init(3,3,true);
 }

@@ -68,7 +68,7 @@ void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int *
         * checkPoint,
         * tmp,
         * poligono;
-    reset_viewport();
+    reset_viewport_list();
 
     poligono = malloc(sizeof(Vertices));
 
