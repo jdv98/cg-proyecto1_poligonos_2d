@@ -25,9 +25,9 @@ double pan_x=0,
 void print();
 void * teclaPresionada(void *vargp){
 
-    POLIGONO *poligono_iter;
-    PROVINCIA *provincia_iter;
-    int escalar_int=0,r_l=0,u_d=0;
+  POLIGONO *poligono_iter;
+  PROVINCIA *provincia_iter;
+  int escalar_int=0,r_l=0,u_d=0;
   
     while(left_key || right_key || up_key || down_key){
       usleep(15*1000);
@@ -77,7 +77,6 @@ void init_thread(){
 
 void normal_keys(unsigned char key, int x, int y)
 {
-  printf("n> %i\n",key);
   switch (key)
   {
 
@@ -90,6 +89,21 @@ void normal_keys(unsigned char key, int x, int y)
   
   case 27: // Esc
     exit(0);
+    break;
+
+  case 49: // 1
+    DIBUJAR_RELLENO=false;
+    DIBUJAR_TEXTURA=false;
+    break;
+
+  case 50: // 2
+    DIBUJAR_RELLENO=true;
+    DIBUJAR_TEXTURA=false;
+    break;
+
+  case 51: // 3
+    DIBUJAR_RELLENO=false;
+    DIBUJAR_TEXTURA=true;
     break;
 
   case 53: // 5
@@ -136,21 +150,6 @@ void normal_keys(unsigned char key, int x, int y)
     zoom_viewport((double)10/9);
     break;
 
-  case 56: // 8
-    DIBUJAR_RELLENO=true;
-    DIBUJAR_TEXTURA=false;
-    break;
-
-  case 57: // 9
-    DIBUJAR_RELLENO=false;
-    DIBUJAR_TEXTURA=true;
-    break;
-
-  case 48: // 0
-    DIBUJAR_RELLENO=false;
-    DIBUJAR_TEXTURA=false;
-    break;
-
   default:
     break;
   }
@@ -169,8 +168,6 @@ void normal_keys_up(unsigned char key,int x, int y){
 
 void special_keys(int key, int x, int y)
 {
-
-  printf("s> %i\n",key);
   switch (key)
   {
     case 100:
@@ -241,10 +238,11 @@ void print()
       for (size_t k = 0; k < poligono_iter->size; k++)
       {
         system("clear");
+        printf("\033[0;32m");
         printf("poligono >> %lf %lf\n", poligono_iter->vertices[k][0], poligono_iter->vertices[k][1]);
-        
+        printf("\033[0;36m");
         printf("clipping >> %lf %lf %lf %lf\n",viewport[LB_P].x,viewport[LB_P].y,viewport[RT_P].x,viewport[RT_P].y);
-        
+        printf("\033[0;37m");
         return;
       }
     }
