@@ -75,8 +75,8 @@ void rotacion(){
     multiplicar_provincias(matriz_rotada);
 }
 
-void escalacion(){
-    double ** matriz_escala = matriz_esca_anclado(0.9, 500, 500);
+void escalacion(double escalar){
+    double ** matriz_escala = matriz_esca_anclado(escalar, 500, 500);
     matriz_mul_r(&provincias->log_cambios_matriz,3,3,&matriz_escala,3,3);
     multiplicar_provincias(matriz_escala);
 }
@@ -88,7 +88,9 @@ void traslacion(){
 }
 
 void receteando(){ //Aparentemente se requiere la inversa de la matriz cambios :T
-    double ** matriz_recet = provincias->log_cambios_matriz;
-    provincias->log_cambios_matriz = matriz_init(3,3,true);
-    multiplicar_provincias(matriz_recet);
+    double *** matriz_recet = &provincias->log_cambios_matriz;
+    double ** matriz_inversa=inversa_3x3((*matriz_recet));
+
+    matriz_mul_r(matriz_recet,3,3,&matriz_inversa,3,3);
+    multiplicar_provincias(matriz_inversa);
 }

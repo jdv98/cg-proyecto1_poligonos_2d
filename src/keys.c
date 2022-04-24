@@ -98,6 +98,7 @@ void init_thread(){
 
 void normal_keys(unsigned char key, int x, int y)
 {
+  printf("%i\n",key);
   switch (key)
   {
   case 27: // Esc
@@ -127,11 +128,11 @@ void normal_keys(unsigned char key, int x, int y)
     break;
 
   case 53: // 5
-    dis_velocidad();
+    print();
     break;
 
   case 54: // 6
-    print();
+    traslacion();
     break;
   
   case 97: // a
@@ -139,7 +140,11 @@ void normal_keys(unsigned char key, int x, int y)
     break;
 
   case 101: // e
-    escalacion();
+    escalacion(0.9);
+    break;
+
+  case 82: // e
+    escalacion(1.5);
     break;
 
   case 114: // r

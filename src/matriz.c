@@ -134,3 +134,26 @@ void free_matriz(double *** matriz,int column){
     free((*matriz));
     (*matriz)=NULL;
 }
+
+double ** inversa_3x3(double ** invertir){
+    double determinante=
+        invertir[0][0]*( (invertir[1][1]*invertir[2][2]) - (invertir[2][1]*invertir[1][2]) )-
+        invertir[0][1]*( (invertir[1][0]*invertir[2][2]) - (invertir[2][0]*invertir[1][2]) )+
+        invertir[0][2]*( (invertir[1][0]*invertir[2][1]) - (invertir[2][0]*invertir[1][1]) );
+
+    double ** inversa=matriz_init(3,3,false);
+
+    inversa[0][0]=((invertir[1][1]*invertir[2][2])-(invertir[1][2]*invertir[2][1]))/determinante;
+    inversa[1][0]=((invertir[1][2]*invertir[2][0])-(invertir[1][0]*invertir[2][2]))/determinante;
+    inversa[2][0]=((invertir[1][0]*invertir[2][1])-(invertir[1][1]*invertir[2][0]))/determinante;
+    
+    inversa[0][1]=((invertir[0][2]*invertir[2][1])-(invertir[0][1]*invertir[2][2]))/determinante;
+    inversa[1][1]=((invertir[0][0]*invertir[2][2])-(invertir[0][2]*invertir[2][0]))/determinante;
+    inversa[2][1]=((invertir[0][1]*invertir[2][0])-(invertir[0][0]*invertir[2][1]))/determinante;
+    
+    inversa[0][2]=((invertir[0][1]*invertir[1][2])-(invertir[0][2]*invertir[1][1]))/determinante;
+    inversa[1][2]=((invertir[0][2]*invertir[1][0])-(invertir[0][0]*invertir[1][2]))/determinante;
+    inversa[2][2]=((invertir[0][0]*invertir[1][1])-(invertir[0][1]*invertir[1][0]))/determinante;
+
+    return inversa;
+}
