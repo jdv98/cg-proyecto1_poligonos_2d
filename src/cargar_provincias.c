@@ -165,6 +165,7 @@ void cargarProvincias(const char *filename){
     provincias=malloc(sizeof(PROVINCIAS));
     provincias->size=0;
     provincias->provincias=malloc(0);
+    provincias->log_cambios_matriz=matriz_init(3,3,true);
     
     //LECTURA
     while(seguir_iter()){      

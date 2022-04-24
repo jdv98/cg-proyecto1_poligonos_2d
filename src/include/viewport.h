@@ -17,10 +17,11 @@
 #define RT_P 2
 #define RB_P 3
 
+extern double ** viewport_log_cambios;
 extern Vertices * viewport;
 
 void asignar_valor_viewport(double left, double bottom, double right, double top);
 void init_viewport(double left, double bottom, double right, double top);
-void reset_viewport();
+void reset_viewport_list();
 
 #endif

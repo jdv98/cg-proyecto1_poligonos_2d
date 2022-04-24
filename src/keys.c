@@ -1,3 +1,4 @@
+#include "include/transformaciones.h"
 #include "include/keys.h"
 #include <pthread.h>
 #include <unistd.h>
@@ -10,81 +11,61 @@ pthread_t render_id;
 struct timespec ts;
 
 bool thread_running=false,
-    shitf=false,
     left_key=false,
     right_key=false,
     up_key=false,
     down_key=false,
-    subir_escala_bool=false,
-    bajar_escala_bool=false;
+    down_shift=false,
+    down_ctrl=false;
 
-double escalar = 1.5;
-int num = 2;
+double pan_x=0,
+      pan_y=0,
+      velocidad_pan;
 
 void print();
-void aum_velocidad();
-void dis_velocidad();
-
 void * teclaPresionada(void *vargp){
 
     POLIGONO *poligono_iter;
     PROVINCIA *provincia_iter;
     int escalar_int=0,r_l=0,u_d=0;
   
-  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool){
-    usleep(30*1000);
+    while(left_key || right_key || up_key || down_key){
+      usleep(15*1000);
 
-    if(subir_escala_bool) escalar_int=1;
-    else if(bajar_escala_bool) escalar_int=2;
-    else escalar_int=0;
+      if(down_ctrl){
+        velocidad_pan=0.01;
+      }
+      else if(down_shift){
+        velocidad_pan=10;
+      }
+      else{
+        velocidad_pan=5;
+      }
 
-    if(right_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x+num,viewport[LB_P].y,
-        viewport[RT_P].x+num,viewport[RT_P].y
-      );
-    }
-    else if(left_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x-num,viewport[LB_P].y,
-        viewport[RT_P].x-num,viewport[RT_P].y
-      );
-    }
+      if(right_key){
+        pan_x=velocidad_pan;
+      }
+      else if(left_key){
+        pan_x=-velocidad_pan;
+      }
+      else{
+        pan_x=0;
+      }
 
-    if(up_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x,viewport[LB_P].y+num,
-        viewport[RT_P].x,viewport[RT_P].y+num
-      );
-    }
-    else if(down_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x,viewport[LB_P].y-num,
-        viewport[RT_P].x,viewport[RT_P].y-num
-      );
-    }
-    for (size_t i = 0; i < provincias->size; i++)
-    {
-        provincia_iter = provincias->provincias[i];
-        for (size_t j = 0; j < provincia_iter->size; j++)
-        {
-          poligono_iter = provincia_iter->poligonos[j];
-          for (size_t k = 0; k < poligono_iter->size; k++)
-          {
-            if(escalar_int==1){
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] * escalar;
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] * escalar;
-            }
-            else if(escalar_int==2){
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] / escalar;
-            poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] / escalar;
-            }
-          }
-        }
-    }
-    glutPostRedisplay();
+      if(up_key){
+        pan_y=velocidad_pan;
+      }
+      else if(down_key){
+        pan_y=-velocidad_pan;
+      }
+      else{
+        pan_y=0;
+      }
+      pan_viewport(pan_x,pan_y);
+      glutPostRedisplay();
   }
   thread_running=false;
+  glutPostRedisplay();
 }
 
 void init_thread(){
@@ -96,32 +77,63 @@ void init_thread(){
 
 void normal_keys(unsigned char key, int x, int y)
 {
+  printf("n> %i\n",key);
   switch (key)
   {
+
+  case 8: // Borrar
+    if(down_shift)
+      reset_viewport();
+    else
+      reset_mapa();
+    break;
+  
   case 27: // Esc
     exit(0);
     break;
-  
-  case 50: // 2
-    bajar_escala_bool=true;
-    init_thread();
-    break;
-
-  case 51: // 3
-    subir_escala_bool=true;
-    init_thread();
-    break;
-
-  case 52: // 4
-    aum_velocidad();
-    break;
 
   case 53: // 5
-    dis_velocidad();
+    print();
+    break;
+  
+  case 97: // a
+    reset_mapa ();
+    break;
+  
+  case 65: // a
+    reset_viewport ();
     break;
 
-  case 54: // 6
-    print();
+  case 101: // e
+    escalacion_mapa(0.9,0,0);
+    break;
+
+  case 69: // e
+    escalacion_mapa(1.5,0,0);
+    break;
+
+  case 114: // r
+    rotacion_mapa(-1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+    break;
+
+  case 82: // R
+    rotacion_mapa(1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+    break;
+
+  case 116: // t
+    rotacion_mapa(-1,0,0);
+    break;
+
+  case 84: // T
+    rotacion_mapa(1,0,0);
+    break;
+
+  case 122: // z
+    zoom_viewport((double)9/10);
+    break;
+
+  case 90: // z
+    zoom_viewport((double)10/9);
     break;
 
   case 56: // 8
@@ -142,19 +154,13 @@ void normal_keys(unsigned char key, int x, int y)
   default:
     break;
   }
+
+  init_thread();
 }
 
 void normal_keys_up(unsigned char key,int x, int y){
   switch (key)
   {
-
-  case 50: // 2
-    bajar_escala_bool=false;
-    break;
-
-  case 51: // 3
-    subir_escala_bool=false;
-    break;
 
   default:
     break;
@@ -163,32 +169,40 @@ void normal_keys_up(unsigned char key,int x, int y){
 
 void special_keys(int key, int x, int y)
 {
+
+  printf("s> %i\n",key);
   switch (key)
   {
-  case 100:
-    left_key=true;
-    init_thread();
-    break;
-  case 101:
-    up_key=true;
-    init_thread();
-    break;
-  case 102:
-    right_key=true;
-    init_thread();
-    break;
-  case 103:
-    down_key=true;
-    init_thread();
-    break;
-  default:
-    break;
+    case 100:
+      left_key=true;
+      init_thread();
+      break;
+    case 101:
+      up_key=true;
+      init_thread();
+      break;
+    case 102:
+      right_key=true;
+      init_thread();
+      break;
+    case 103:
+      down_key=true;
+      init_thread();
+      break;
+    case 112:
+      down_shift=true;
+      break;
+    case 114:
+      down_ctrl=true;
+      break;
+    default:
+      break;
   }
 }
 
 void special_keys_up(int key,int x, int y){
   switch (key)
-    {
+  {
     case 100:
       left_key=false;
       break;
@@ -200,6 +214,12 @@ void special_keys_up(int key,int x, int y){
       break;
     case 103:
       down_key=false;
+      break;
+    case 112:
+      down_shift=false;
+      break;
+    case 114:
+      down_ctrl=false;
       break;
     default:
       break;
@@ -229,19 +249,4 @@ void print()
       }
     }
   }
-}
-
-void aum_velocidad()
-{
-  system("clear");
-  num += num;
-  printf("num>> %i\n", num);
-}
-
-void dis_velocidad()
-{
-  if (num > 2)
-    num -= (int)num / 2;
-  system("clear");
-  printf("num>> %i\n", num);
 }

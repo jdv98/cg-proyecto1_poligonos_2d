@@ -4,7 +4,7 @@ BIN_DIR=bin
 SRC_DIR=src
 
 #Archivos
-FILES = main algoritmo_bresenham keys dibujar cargar_provincias read_file char_iterator clipping viewport rellenado textura
+FILES = main algoritmo_bresenham keys dibujar cargar_provincias read_file char_iterator clipping viewport rellenado textura matriz transformaciones
 OBJECTS=$(patsubst %, $(OBJ_DIR)/%.o, $(FILES))
 OUTPUT=$(BIN_DIR)/main
 
