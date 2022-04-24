@@ -36,6 +36,14 @@ double **rotar_matriz(double angle);
  */
 double **trasladar_matriz(double t_x, double t_y);
 
+/**
+ * @brief Matriz para mover en los ejes de un plano 2D
+ * 
+ * @param sx 
+ * @param sy 
+ * @return double** 
+ */
+double **escalar_matriz(double sx, double sy);
 
 /**
  * @brief Zoom
@@ -71,6 +79,14 @@ void matriz_mul_r(double ***matriz1, int r1, int c1, double ***matriz2, int r2, 
  * @return double** 
  */
 double ** matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r2, int c2);
+
+/**
+ * @brief Retorna matriz inversa de una matriz dada.
+ *
+ * @param matriz
+ * @return double** 
+ */
+double ** matriz_inversa (double ***matriz1);
 
 /**
  * @brief Libera la memoria de la matriz

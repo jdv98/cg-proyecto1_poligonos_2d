@@ -52,6 +52,16 @@ double **trasladar_matriz(double t_x, double t_y)
     return matriz;
 }
 
+double ** escalar_matriz(double sx, double sy)
+{
+    double **matriz = matriz_init(3, 3, true);
+
+    matriz[0][0] = sx;
+    matriz[1][1] = sy;
+
+    return matriz;
+}
+
 double **zoom_matriz(double z, double xc, double yc)
 {
     double **matriz = matriz_init(3, 3, true);
@@ -106,6 +116,12 @@ double ** matriz_mul(double ***matriz1, int r1, int c1, double ***matriz2, int r
         }
     }
     return result;
+}
+
+double ** matriz_inversa (double ***matrizT)
+{
+    double ** matrizI = matriz_init(3,3,true);
+    return matrizI;
 }
 
 void free_matriz(double *** matriz,int column){

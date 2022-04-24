@@ -1,7 +1,9 @@
 #ifndef TRANSFORMACIONES_H
 #define TRANSFORMACIONES_H
 
-void rotar();
+void rotacion();
+void escalacion();
+void traslacion();
 void rotar_triangulos(double grados, double x, double y);
 
 #endif

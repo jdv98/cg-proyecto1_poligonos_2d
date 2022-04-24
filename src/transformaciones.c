@@ -30,6 +30,19 @@ double ** rotar_sobre_eje(double grados, double x, double y)
     return m_trasladar;
 }
 
+double ** matriz_esca_anclado (double escalar, double x, double y) {
+    double **m_trasladar = trasladar_matriz(x, y);
+    double **m_escalar = escalar_matriz (escalar, escalar);
+    double **m_trasladar_inv = trasladar_matriz(-x, -y);
+
+    matriz_mul_r(&m_trasladar, 3, 3, &m_escalar, 3, 3);
+    matriz_mul_r(&m_trasladar, 3, 3, &m_trasladar_inv, 3, 3);
+
+    free_matriz(&m_escalar,3);
+    free_matriz(&m_trasladar_inv,3);
+    return m_trasladar;
+}
+
 void multiplicar_provincias(double ** operador)
 {
     POLIGONO *poligono_iter;
@@ -56,11 +69,26 @@ void multiplicar_provincias(double ** operador)
     }
 }
 
-
-void rotar(){
-    double ** matriz_rotada=rotar_sobre_eje(0.5, 500, 500);
-
+void rotacion(){
+    double ** matriz_rotada=rotar_sobre_eje(1, 500, 500);
     matriz_mul_r(&provincias->log_cambios_matriz,3,3,&matriz_rotada,3,3);
-
     multiplicar_provincias(matriz_rotada);
+}
+
+void escalacion(){
+    double ** matriz_escala = matriz_esca_anclado(0.9, 500, 500);
+    matriz_mul_r(&provincias->log_cambios_matriz,3,3,&matriz_escala,3,3);
+    multiplicar_provincias(matriz_escala);
+}
+
+void traslacion(){
+    double ** matriz_traslado = trasladar_matriz(20, 0);
+    matriz_mul_r(&provincias->log_cambios_matriz,3,3,&matriz_traslado,3,3);
+    multiplicar_provincias(matriz_traslado);
+}
+
+void receteando(){ //Aparentemente se requiere la inversa de la matriz cambios :T
+    double ** matriz_recet = provincias->log_cambios_matriz;
+    provincias->log_cambios_matriz = matriz_init(3,3,true);
+    multiplicar_provincias(matriz_recet);
 }

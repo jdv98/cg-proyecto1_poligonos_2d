@@ -17,7 +17,8 @@ bool thread_running=false,
     up_key=false,
     down_key=false,
     subir_escala_bool=false,
-    bajar_escala_bool=false;
+    bajar_escala_bool=false,
+    entrar=false;
 
 double escalar = 1.5;
 int num = 2;
@@ -32,7 +33,7 @@ void * teclaPresionada(void *vargp){
     PROVINCIA *provincia_iter;
     int escalar_int=0,r_l=0,u_d=0;
   
-  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool){
+  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool || entrar){
     usleep(30*1000);
 
     if(subir_escala_bool) escalar_int=1;
@@ -104,7 +105,11 @@ void normal_keys(unsigned char key, int x, int y)
     break;
   
   case 49: // 1
-    rotar();
+    entrar=true;
+    init_thread();
+    //rotacion();
+    //escalacion();
+    //traslacion();
     break;
   
   case 50: // 2
@@ -127,6 +132,18 @@ void normal_keys(unsigned char key, int x, int y)
 
   case 54: // 6
     print();
+    break;
+  
+  case 97: // a
+    receteando ();
+    break;
+
+  case 101: // e
+    escalacion();
+    break;
+
+  case 114: // r
+    rotacion();
     break;
 
   default:
