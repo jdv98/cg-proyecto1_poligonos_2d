@@ -41,13 +41,13 @@ void dibujar_poligono(POLIGONO *poligono,COLOR ** color_mapa, COLOR ** relleno_m
 
 void reset_buffer()
 {
-    for (int i = 0; i < resolucion; i++)
+    for (int i = 0; i < RESOLUCION_W; i++)
     {
-        for (int j = 0; j < resolucion; j++)
+        for (int j = 0; j < RESOLUCION_H; j++)
         {
-            buffer[i][j].r = 0.0;
-            buffer[i][j].g = 0.0;
-            buffer[i][j].b = 0.0;
+        buffer[i][j].r = 0.0;
+        buffer[i][j].g = 0.0;
+        buffer[i][j].b = 0.0;
         }
     }
 }

@@ -3,13 +3,17 @@
 
 ## Uso
 
+```bash
+Usage: ./aplicacion <resolucion> <width> <height>
+```
+
+
 |Tecla|Función|
 |---|---|
-| <kbd>1</kbd>  | Imprimir mapa completo |
 | <kbd>Esc</kbd>  | Salir |
 
 ## Requerimientos
 
 |Nombre|Version|
 |---|---|
-|[json-c](https://json-c.github.io/json-c/)|0.15|
+|ImageMagick|7.1.0-25|

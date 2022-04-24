@@ -2,8 +2,8 @@
 
 COLOR * scanline_a_pantalla(TEXTURA ** xy,int x,int y){
 	
-	int xk=( ((*xy)->width)*x )/resolucion,
-		yk=( ((*xy)->height)*y )/resolucion;
+	int xk=( ((*xy)->width)*x )/RESOLUCION_W,
+		yk=( ((*xy)->height)*y )/RESOLUCION_H;
 
 	return &(*xy)->pixeles[yk][xk];
 }
