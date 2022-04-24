@@ -96,6 +96,6 @@ double ** matriz_inversa (double ***matriz1);
  */
 void free_matriz(double *** matriz, int column);
 
-void double ** inversa_3x3(double ** invertir);
+double ** inversa_3x3(double ** invertir);
 
 #endif
