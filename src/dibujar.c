@@ -26,14 +26,14 @@ void dibujar_poligono(POLIGONO *poligono,COLOR ** color_mapa, COLOR ** relleno_m
     clipping_poligono(poligono->vertices, poligono->size, &matriz_dibujo, &matriz_size);
     if (matriz_size)
     {
-
-        for (size_t z = 0; z < matriz_size - 1; z++)
-        {
-            bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], (*color_mapa));
-        }
         //
         if(DIBUJAR_RELLENO || DIBUJAR_TEXTURA)
             rellenado_Poligono(&matriz_dibujo,&matriz_size,(*color_mapa),textura);
+        else
+            for (size_t z = 0; z < matriz_size - 1; z++)
+            {
+                bresenham((int)matriz_dibujo[z][0], (int)matriz_dibujo[z][1], (int)matriz_dibujo[z + 1][0], (int)matriz_dibujo[z + 1][1], (*color_mapa));
+            }
         //
         free_matriz_dibujo(&matriz_dibujo, &matriz_size);
     }
