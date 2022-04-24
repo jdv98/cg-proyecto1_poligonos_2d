@@ -1,6 +1,7 @@
 #include "include/transformaciones.h"
 #include "include/provincias.h"
 #include "include/matriz.h"
+#include "include/viewport.h"
 
 double ** triangulo_a_matriz(double ** poligono){
     double ** nuevo= matriz_init(3,3,false);
@@ -93,4 +94,55 @@ void receteando(){ //Aparentemente se requiere la inversa de la matriz cambios :
 
     matriz_mul_r(matriz_recet,3,3,&matriz_inversa,3,3);
     multiplicar_provincias(matriz_inversa);
+}
+
+void pan_viewport(double x, double y){
+    double ** trasladar=trasladar_matriz(x, y);
+    double ** nuevo=matriz_init(3,2,false);
+
+    nuevo[0][0]=viewport[LB_P].x;
+    nuevo[1][0]=viewport[LB_P].y;
+    nuevo[2][0]=1;
+
+    nuevo[0][1]=viewport[RT_P].x;
+    nuevo[1][1]=viewport[RT_P].y;
+    nuevo[2][1]=1;
+
+    double ** resultado=matriz_mul(&trasladar,3,3,&nuevo,3,2);
+
+    asignar_valor_viewport(resultado[0][0], resultado[1][0], resultado[0][1], resultado[1][1]);
+
+    free_matriz(&resultado,3);
+    free_matriz(&trasladar,3);
+    free_matriz(&nuevo,3);
+}
+
+void zoom_viewport(double zoom){
+    double x=(viewport[LB_P].x+viewport[RT_P].x)/2;
+    double y=(viewport[LB_P].y+viewport[RT_P].y)/2;
+
+    /****/
+    double ** nuevo=matriz_init(3,2,false);
+
+    nuevo[0][0]=viewport[LB_P].x;
+    nuevo[1][0]=viewport[LB_P].y;
+    nuevo[2][0]=1;
+
+    nuevo[0][1]=viewport[RT_P].x;
+    nuevo[1][1]=viewport[RT_P].y;
+    nuevo[2][1]=1;
+    /****/
+
+    double ** trasladar=trasladar_matriz(x-x*zoom, y-y*zoom);
+    double ** escalar=escalar_matriz(zoom,zoom);
+    matriz_mul_r(&trasladar,3,3,&escalar,3,3);
+
+    double ** resultado=matriz_mul(&trasladar,3,3,&nuevo,3,2);
+
+    asignar_valor_viewport(resultado[0][0], resultado[1][0], resultado[0][1], resultado[1][1]);
+
+    free_matriz(&resultado,3);
+    free_matriz(&trasladar,3);
+    free_matriz(&escalar,3);
+    free_matriz(&nuevo,3);
 }

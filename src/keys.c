@@ -32,58 +32,35 @@ void * teclaPresionada(void *vargp){
     POLIGONO *poligono_iter;
     PROVINCIA *provincia_iter;
     int escalar_int=0,r_l=0,u_d=0;
+    int x=0,y=0;
   
-  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool || entrar){
-    usleep(30*1000);
+  while(left_key || right_key || up_key || down_key || bajar_escala_bool || subir_escala_bool){
+    usleep(15*1000);
 
     if(subir_escala_bool) escalar_int=1;
     else if(bajar_escala_bool) escalar_int=2;
     else escalar_int=0;
 
     if(right_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x+num,viewport[LB_P].y,
-        viewport[RT_P].x+num,viewport[RT_P].y
-      );
+      x=5;
     }
     else if(left_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x-num,viewport[LB_P].y,
-        viewport[RT_P].x-num,viewport[RT_P].y
-      );
+      x=-5;
+    }
+    else{
+      x=0;
     }
 
     if(up_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x,viewport[LB_P].y+num,
-        viewport[RT_P].x,viewport[RT_P].y+num
-      );
+      y=5;
     }
     else if(down_key){
-      asignar_valor_viewport(
-        viewport[LB_P].x,viewport[LB_P].y-num,
-        viewport[RT_P].x,viewport[RT_P].y-num
-      );
+      y=-5;
     }
-    for (size_t i = 0; i < provincias->size; i++)
-    {
-        provincia_iter = provincias->provincias[i];
-        for (size_t j = 0; j < provincia_iter->size; j++)
-        {
-          poligono_iter = provincia_iter->poligonos[j];
-          for (size_t k = 0; k < poligono_iter->size; k++)
-          {
-            if(escalar_int==1){
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] * escalar;
-              poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] * escalar;
-            }
-            else if(escalar_int==2){
-              poligono_iter->vertices[k][0] = poligono_iter->vertices[k][0] / escalar;
-            poligono_iter->vertices[k][1] = poligono_iter->vertices[k][1] / escalar;
-            }
-          }
-        }
+    else{
+      y=0;
     }
+    pan_viewport(x,y);
     glutPostRedisplay();
   }
   thread_running=false;
@@ -143,12 +120,20 @@ void normal_keys(unsigned char key, int x, int y)
     escalacion(0.9);
     break;
 
-  case 82: // e
+  case 69: // e
     escalacion(1.5);
     break;
 
   case 114: // r
     rotacion();
+    break;
+
+  case 122: // z
+    zoom_viewport(0.5);
+    break;
+
+  case 90: // z
+    zoom_viewport(2);
     break;
 
   default:
