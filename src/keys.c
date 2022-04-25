@@ -109,14 +109,6 @@ void normal_keys(unsigned char key, int x, int y)
   case 53: // 5
     print();
     break;
-  
-  case 97: // a
-    reset_mapa ();
-    break;
-  
-  case 65: // a
-    reset_viewport ();
-    break;
 
   case 101: // e
     escalacion_mapa(0.9,0,0);
@@ -143,11 +135,11 @@ void normal_keys(unsigned char key, int x, int y)
     break;
 
   case 122: // z
-    zoom_viewport((double)9/10);
+    zoom_viewport((double)955/1000);
     break;
 
   case 90: // z
-    zoom_viewport((double)10/9);
+    zoom_viewport((double)10/1);
     break;
 
   default:
