@@ -5,6 +5,7 @@ int matriz_size = 0;
 
 void dibujar(int x, int y, COLOR *color)
 {   
+    //if(x>-1 && x<RESOLUCION_W)
     buffer[x][y] = (COLOR)*color;
 }
 

@@ -16,12 +16,16 @@ bool thread_running=false,
     up_key=false,
     down_key=false,
     down_shift=false,
-    down_ctrl=false;
+    down_ctrl=false,
+    down_alt=false,
+    zoom_in=false,
+    zoom_out=false;
 
 double pan_x=0,
       pan_y=0,
-      velocidad_pan;
-
+      velocidad_pan=0,
+      velocidad_base_pan=1;
+void set_velocidad_pan(double v);
 void print();
 void * teclaPresionada(void *vargp){
 
@@ -29,17 +33,43 @@ void * teclaPresionada(void *vargp){
   PROVINCIA *provincia_iter;
   int escalar_int=0,r_l=0,u_d=0;
   
-    while(left_key || right_key || up_key || down_key){
-      usleep(15*1000);
+    while(left_key || right_key || up_key || down_key || zoom_in || zoom_out){
+
+      if(zoom_in){
+        if(down_ctrl){//rapido
+          zoom_viewport((double)1/10);
+        }
+        else if(down_alt){//lento
+          zoom_viewport((double)9/10);
+        }
+        else{
+          zoom_viewport((double)0.5);
+        }
+        set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
+        zoom_in=false;
+      }
+      else if(zoom_out){
+        if(down_ctrl){
+          zoom_viewport((double)10);
+        }
+        else if(down_alt){
+          zoom_viewport((double)10/9);
+        }
+        else{
+          zoom_viewport((double)2);
+        }
+        set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
+        zoom_out=false;
+      }
 
       if(down_ctrl){
-        velocidad_pan=0.01;
+        velocidad_pan=(velocidad_base_pan/4.0);
       }
       else if(down_shift){
-        velocidad_pan=10;
+        velocidad_pan=(double)(velocidad_base_pan*4.0);
       }
       else{
-        velocidad_pan=5;
+        velocidad_pan=velocidad_base_pan;
       }
 
       if(right_key){
@@ -61,11 +91,14 @@ void * teclaPresionada(void *vargp){
       else{
         pan_y=0;
       }
+
       pan_viewport(pan_x,pan_y);
       glutPostRedisplay();
+      usleep(10*1000);
   }
   thread_running=false;
   glutPostRedisplay();
+  velocidad_pan=velocidad_base_pan;
 }
 
 void init_thread(){
@@ -75,14 +108,20 @@ void init_thread(){
   }
 }
 
+void set_velocidad_pan(double v){
+    velocidad_base_pan=v;
+}
+
 void normal_keys(unsigned char key, int x, int y)
 {
   switch (key)
   {
 
   case 8: // Borrar
-    if(down_shift)
+    if(down_shift){
       reset_viewport();
+      velocidad_base_pan=5;
+    }
     else
       reset_mapa();
     break;
@@ -134,12 +173,12 @@ void normal_keys(unsigned char key, int x, int y)
     rotacion_mapa(1,0,0);
     break;
 
-  case 122: // z
-    zoom_viewport((double)955/1000);
+  case 43: // +
+      zoom_in=true;
     break;
 
-  case 90: // z
-    zoom_viewport((double)10/1);
+  case 45: // -
+      zoom_out=true;
     break;
 
   default:
@@ -164,19 +203,15 @@ void special_keys(int key, int x, int y)
   {
     case 100:
       left_key=true;
-      init_thread();
       break;
     case 101:
       up_key=true;
-      init_thread();
       break;
     case 102:
       right_key=true;
-      init_thread();
       break;
     case 103:
       down_key=true;
-      init_thread();
       break;
     case 112:
       down_shift=true;
@@ -184,9 +219,13 @@ void special_keys(int key, int x, int y)
     case 114:
       down_ctrl=true;
       break;
+    case 116:
+      down_alt=true;
+      break;
     default:
       break;
   }
+  init_thread();
 }
 
 void special_keys_up(int key,int x, int y){
@@ -209,6 +248,9 @@ void special_keys_up(int key,int x, int y){
       break;
     case 114:
       down_ctrl=false;
+      break;
+    case 116:
+      down_alt=false;
       break;
     default:
       break;

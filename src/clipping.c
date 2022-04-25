@@ -56,8 +56,8 @@ void limpiar_memoria_poligono(Vertices *iter);
 /****************************************************************************************/
 
 void clipping_a_pantalla(double ** xy,double x,double y){
-    (*xy)[0]=(RESOLUCION_W-1)*((x-viewport[LB_P].x)/(viewport[RT_P].x-viewport[LB_P].x));
-    (*xy)[1]=(RESOLUCION_H-1)*((y-viewport[LB_P].y)/(viewport[RT_P].y-viewport[LB_P].y));
+    (*xy)[0]=((double)RESOLUCION_W-2.0)*((x-viewport[LB_P].x)/(viewport[RT_P].x-viewport[LB_P].x));
+    (*xy)[1]=((double)RESOLUCION_H-2.0)*((y-viewport[LB_P].y)/(viewport[RT_P].y-viewport[LB_P].y));
 }
 
 void clipping_poligono(double **vertices,int size,double *** nuevo_vertice,int * nuevo_vertice_size)

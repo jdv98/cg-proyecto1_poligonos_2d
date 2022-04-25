@@ -2,11 +2,11 @@
 
 double **matriz_init(int row, int column, bool identidad)
 {
-    double **matriz = malloc(row * sizeof(double *));
+    double **matriz = calloc(row, sizeof(double *));
 
     for (size_t i_row = 0; i_row < row; i_row++)
     {
-        matriz[i_row] = malloc(column * sizeof(double));
+        matriz[i_row] = calloc(column, sizeof(double));
 
         for (size_t i_column = 0; i_column < column; i_column++)
         {

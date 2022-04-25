@@ -5,10 +5,10 @@ void lecturaAVS(COLOR *** matriz_textura,MagickWand *magick_wand, int height);
 
 void iniciar_matriz(int h,int w, COLOR *** matriz_textura)
 {
-    (*matriz_textura) = (COLOR **)malloc(h * sizeof(COLOR *));
+    (*matriz_textura) = (COLOR **)calloc(h, sizeof(COLOR *));
     for (int i = 0; i < h; i++)
     {
-        (*matriz_textura)[i] = (COLOR *)malloc(w * sizeof(COLOR));
+        (*matriz_textura)[i] = (COLOR *)calloc(w, sizeof(COLOR));
     }
 }
 

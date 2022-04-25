@@ -26,8 +26,8 @@ Usage: ./aplicacion <resolucion> <width> <height>
 | <kbd>&darr;</kbd> + ( <kbd>None</kbd> \| <kbd>Shift</kbd> \| <kbd>Ctrl</kbd> )  | Mover abajo velocidad ( normal \| rápido \| lento ) |
 | <kbd>&larr;</kbd> + ( <kbd>None</kbd> \| <kbd>Shift</kbd> \| <kbd>Ctrl</kbd> )  | Mover izquierda velocidad ( normal \| rápido \| lento ) |
 | <kbd>&rarr;</kbd> + ( <kbd>None</kbd> \| <kbd>Shift</kbd> \| <kbd>Ctrl</kbd> )  | Mover derecha velocidad ( normal \| rápido \| lento ) |
-| <kbd>z</kbd>  | zoom in |
-| <kbd>Z</kbd>  | zoom out |
+| <kbd>+</kbd> +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> )| zoom in ( normal \| rápido \| lento )|
+| <kbd>-</kbd> +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> )| zoom out ( normal \| rápido \| lento )|
 | <kbd>Shift</kbd>+<kbd>Backspace</kbd>  | reset |
 
 
