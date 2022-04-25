@@ -19,7 +19,11 @@ bool thread_running=false,
     down_ctrl=false,
     down_alt=false,
     zoom_in=false,
-    zoom_out=false;
+    zoom_out=false,
+    rotacion_viewport=false,
+    rotacion_cero=false,
+    rv_clockwise=true,
+    rc_clockwise=true;
 
 double pan_x=0,
       pan_y=0,
@@ -33,7 +37,7 @@ void * teclaPresionada(void *vargp){
   PROVINCIA *provincia_iter;
   int escalar_int=0,r_l=0,u_d=0;
   
-    while(left_key || right_key || up_key || down_key || zoom_in || zoom_out){
+    while(left_key || right_key || up_key || down_key || zoom_in || zoom_out || rotacion_viewport || rotacion_cero){
 
       if(zoom_in){
         if(down_ctrl){//rapido
@@ -60,6 +64,42 @@ void * teclaPresionada(void *vargp){
         }
         set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
         zoom_out=false;
+      }
+
+      if(rotacion_viewport){
+        double velocidad;
+        if(down_ctrl){//rapido
+          velocidad=1;
+        }
+        else if(down_alt){//lento
+          velocidad=0.05;
+        }
+        else{
+          velocidad=0.5;
+        }
+        if(rv_clockwise)
+          velocidad*=-1;
+        rotacion_mapa(velocidad,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+
+        rotacion_viewport=false;
+      }
+      else if(rotacion_cero){
+        double velocidad;
+        if(down_ctrl){//rapido
+          velocidad=1;
+        }
+        else if(down_alt){//lento
+          velocidad=0.05;
+        }
+        else{
+          velocidad=0.5;
+        }
+        if(rc_clockwise)
+          velocidad*=-1;
+        rotacion_mapa(velocidad,0.0,0.0);
+
+        rotacion_cero=false;
+
       }
 
       if(down_ctrl){
@@ -158,19 +198,43 @@ void normal_keys(unsigned char key, int x, int y)
     break;
 
   case 114: // r
-    rotacion_mapa(-1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+    rotacion_viewport=true;
+    rv_clockwise=true;
     break;
 
-  case 82: // R
-    rotacion_mapa(1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+  case 18: // r
+    rotacion_viewport=true;
+    rv_clockwise=true;
+    break;
+
+  case 102: // f
+    rotacion_viewport=true;
+    rv_clockwise=false;
+    break;
+
+  case 6: // f
+    rotacion_viewport=true;
+    rv_clockwise=false;
     break;
 
   case 116: // t
-    rotacion_mapa(-1,0,0);
+    rotacion_cero=true;
+    rc_clockwise=true;
     break;
 
-  case 84: // T
-    rotacion_mapa(1,0,0);
+  case 20: // t
+    rotacion_cero=true;
+    rc_clockwise=true;
+    break;
+
+  case 103: // g
+    rotacion_cero=true;
+    rc_clockwise=false;
+    break;
+
+  case 7: // g
+    rotacion_cero=true;
+    rc_clockwise=false;
     break;
 
   case 43: // +

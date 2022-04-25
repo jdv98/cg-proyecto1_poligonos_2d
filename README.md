@@ -10,10 +10,10 @@ Usage: ./aplicacion <resolucion> <width> <height>
 ## Mapa
 |Tecla|Función|
 |---|---|
-| <kbd>r</kbd>  | rotar en el sentido de las manecillas del reloj sobre el centro de la pantalla |
-| <kbd>R</kbd>  | rotar en el sentido inverso sobre el centro de la pantalla |
-| <kbd>t</kbd>  | rotar en el sentido de las manecillas del reloj|
-| <kbd>T</kbd>  | rotar en el sentido inverso |
+| <kbd>r</kbd>  +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> ) | rotar con viewport de ancla en sentido de manecillas del reloj ( normal \| rápido \| lento )|
+| <kbd>f</kbd>  +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> ) | rotar con viewport de ancla inverso ( normal \| rápido \| lento )|
+| <kbd>t</kbd>  +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> ) | rotar sin ancla en sentido de manecillas del reloj ( normal \| rápido \| lento )|
+| <kbd>g</kbd>  +  ( <kbd>None</kbd> \| <kbd>Ctrl</kbd> \| <kbd>Alt</kbd> ) | rotar sin ancla inverso ( normal \| rápido \| lento )|
 | <kbd>e</kbd>  | Disminuye el tamaño |
 | <kbd>E</kbd>  | Incrementa el tamaño |
 | <kbd>Backspace</kbd>  | reset |
