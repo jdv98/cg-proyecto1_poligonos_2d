@@ -8,6 +8,7 @@ void rotar_triangulos(double grados, double x, double y);
 void pan_viewport(double x, double y);
 void zoom_viewport(double zoom);
 void reset_viewport();
+void reset_mapa();
 void print_viewport_log();
 
 #endif

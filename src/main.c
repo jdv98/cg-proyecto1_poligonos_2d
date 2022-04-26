@@ -6,6 +6,7 @@ COLOR *color_mapa;
 int RESOLUCION_H,RESOLUCION_W;
 bool DIBUJAR_TEXTURA=false;
 bool DIBUJAR_RELLENO=false;
+bool DIBUJANDO=false;
 
 void draw_scene();
 void init_colors();
@@ -51,7 +52,9 @@ int main(int argc, char **argv)
 
 void draw_scene()
 {
-  dibujar_mapa();
+  DIBUJANDO=true;
+  dibujar_mapa();  
+  DIBUJANDO=false;
   int i, j;
   
   glBegin(GL_POINTS);

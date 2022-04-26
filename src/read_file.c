@@ -1,6 +1,6 @@
 #include "include/read_file.h"
 
-char *read_file(char *filename,int * size)
+char *read_file(const char *filename,int * size)
 {
     int file;
     double *data=0;

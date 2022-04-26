@@ -76,6 +76,7 @@ void rotacion_mapa(double angulo,double x, double y){
     multiplicar_provincias(matriz_rotada);
 
     free_matriz(&provincias->log_cambios_matriz,3);
+    free_matriz(&matriz_rotada,3);
     provincias->log_cambios_matriz=nuevo_log;
 }
 
@@ -85,6 +86,7 @@ void escalacion_mapa(double escalar, double x, double y){
     multiplicar_provincias(matriz_escala);
 
     free_matriz(&provincias->log_cambios_matriz,3);
+    free_matriz(&matriz_escala,3);
     provincias->log_cambios_matriz=nuevo_log;
 }
 
@@ -94,6 +96,7 @@ void traslacion_mapa(double x, double y){
     multiplicar_provincias(matriz_traslado);
 
     free_matriz(&provincias->log_cambios_matriz,3);
+    free_matriz(&matriz_traslado,3);
     provincias->log_cambios_matriz=nuevo_log;
 }
 

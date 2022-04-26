@@ -23,13 +23,17 @@ extern COLOR *color_mapa;
 extern int RESOLUCION_H;
 extern int RESOLUCION_W;
 
+extern bool DIBUJANDO;
+
 extern bool DIBUJAR_TEXTURA;
 extern bool DIBUJAR_RELLENO;
 
 void dibujar(int x, int y, COLOR * color);
+void dibujar_mapa();
 
 #include "algoritmo_bresenham.h"
 #include "provincias.h"
 #include "rellenado.h"
+#include "clipping.h"
 
 #endif

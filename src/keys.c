@@ -19,12 +19,18 @@ bool thread_running=false,
     down_ctrl=false,
     down_alt=false,
     zoom_in=false,
-    zoom_out=false;
+    zoom_out=false,
+    rotacion_viewport=false,
+    rotacion_cero=false,
+    rv_clockwise=true,
+    rc_clockwise=true,
+    down_escalar_arriba=false,
+    down_escalar_abajo=false;
 
 double pan_x=0,
       pan_y=0,
       velocidad_pan=0,
-      velocidad_base_pan=1;
+      velocidad_base_pan=2;
 void set_velocidad_pan(double v);
 void print();
 void * teclaPresionada(void *vargp){
@@ -33,67 +39,119 @@ void * teclaPresionada(void *vargp){
   PROVINCIA *provincia_iter;
   int escalar_int=0,r_l=0,u_d=0;
   
-    while(left_key || right_key || up_key || down_key || zoom_in || zoom_out){
+    while(left_key || right_key || up_key || down_key || zoom_in || zoom_out || rotacion_viewport || rotacion_cero || down_escalar_arriba || down_escalar_abajo){
 
-      if(zoom_in){
-        if(down_ctrl){//rapido
-          zoom_viewport((double)1/10);
+      if(!DIBUJANDO){
+
+        if(down_escalar_arriba){
+          escalacion_mapa(10.0/9.0,0,0);
+          down_escalar_arriba=false;
         }
-        else if(down_alt){//lento
-          zoom_viewport((double)9/10);
+        else if(down_escalar_abajo){
+          escalacion_mapa(9.0/10.0,0,0);
+          down_escalar_abajo=false;
         }
-        else{
-          zoom_viewport((double)0.5);
+
+        if(zoom_in){
+          if(down_ctrl){//rapido
+            zoom_viewport((double)1/10);
+          }
+          else if(down_alt){//lento
+            zoom_viewport((double)9/10);
+          }
+          else{
+            zoom_viewport((double)0.5);
+          }
+          set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
+          zoom_in=false;
         }
-        set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
-        zoom_in=false;
-      }
-      else if(zoom_out){
+        else if(zoom_out){
+          if(down_ctrl){
+            zoom_viewport((double)10);
+          }
+          else if(down_alt){
+            zoom_viewport((double)10/9);
+          }
+          else{
+            zoom_viewport((double)2);
+          }
+          set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
+          zoom_out=false;
+        }
+
+        if(rotacion_viewport){
+          double velocidad;
+          if(down_ctrl){//rapido
+            velocidad=1;
+          }
+          else if(down_alt){//lento
+            velocidad=0.05;
+          }
+          else{
+            velocidad=0.5;
+          }
+          if(rv_clockwise)
+            velocidad*=-1;
+          rotacion_mapa(velocidad,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+
+          rotacion_viewport=false;
+        }
+        else if(rotacion_cero){
+          double velocidad;
+          if(down_ctrl){//rapido
+            velocidad=1;
+          }
+          else if(down_alt){//lento
+            velocidad=0.05;
+          }
+          else{
+            velocidad=0.5;
+          }
+          if(rc_clockwise)
+            velocidad*=-1;
+          rotacion_mapa(velocidad,0.0,0.0);
+
+          rotacion_cero=false;
+
+        }
+
         if(down_ctrl){
-          zoom_viewport((double)10);
+          velocidad_pan=(velocidad_base_pan/4.0);
         }
-        else if(down_alt){
-          zoom_viewport((double)10/9);
+        else if(down_shift){
+          velocidad_pan=(double)(velocidad_base_pan*4.0);
         }
         else{
-          zoom_viewport((double)2);
+          velocidad_pan=velocidad_base_pan;
         }
-        set_velocidad_pan( (viewport[RT_P].x-viewport[LB_P].x)/1000.0 );
-        zoom_out=false;
-      }
 
-      if(down_ctrl){
-        velocidad_pan=(velocidad_base_pan/4.0);
-      }
-      else if(down_shift){
-        velocidad_pan=(double)(velocidad_base_pan*4.0);
-      }
-      else{
-        velocidad_pan=velocidad_base_pan;
-      }
+        if(right_key || left_key || up_key || down_key){
 
-      if(right_key){
-        pan_x=velocidad_pan;
-      }
-      else if(left_key){
-        pan_x=-velocidad_pan;
-      }
-      else{
-        pan_x=0;
-      }
+          if(right_key){
+            pan_x=velocidad_pan;
+          }
+          else if(left_key){
+            pan_x=-velocidad_pan;
+          }
+          else{
+            pan_x=0;
+          }
 
-      if(up_key){
-        pan_y=velocidad_pan;
-      }
-      else if(down_key){
-        pan_y=-velocidad_pan;
-      }
-      else{
-        pan_y=0;
-      }
+          if(up_key){
+            pan_y=velocidad_pan;
+          }
+          else if(down_key){
+            pan_y=-velocidad_pan;
+          }
+          else{
+            pan_y=0;
+          }
 
-      pan_viewport(pan_x,pan_y);
-      glutPostRedisplay();
+          pan_viewport(pan_x,pan_y);
+        }
+        
+        glutPostRedisplay();
+      }
       usleep(10*1000);
   }
   thread_running=false;
@@ -112,6 +170,38 @@ void set_velocidad_pan(double v){
     velocidad_base_pan=v;
 }
 
+void free_mapa(){
+  TEXTURA * textura_iter;
+  POLIGONO *poligono_iter;
+  PROVINCIA *provincia_iter;
+  for (size_t i = 0; i < provincias->size; i++)
+  {
+      provincia_iter = provincias->provincias[i];
+      for (size_t j = 0; j < provincia_iter->size; j++)
+      {
+          poligono_iter = provincia_iter->poligonos[j];
+          for (size_t z = 0; z < poligono_iter->size; z++)
+          {
+            free(poligono_iter->vertices[z]);
+          }
+          free(poligono_iter->vertices);
+          free(poligono_iter);
+      }
+      free(provincia_iter->color_mapa);
+      textura_iter = provincia_iter->textura;
+
+      for (size_t row = 0; row < textura_iter->height; row++)
+      {
+        free(textura_iter->pixeles[row]);
+      }
+      free(textura_iter);
+      
+      
+      free(provincia_iter->poligonos);
+      free(provincia_iter);
+  }
+}
+
 void normal_keys(unsigned char key, int x, int y)
 {
   switch (key)
@@ -120,13 +210,14 @@ void normal_keys(unsigned char key, int x, int y)
   case 8: // Borrar
     if(down_shift){
       reset_viewport();
-      velocidad_base_pan=5;
     }
-    else
+    else{
       reset_mapa();
+    }
     break;
   
   case 27: // Esc
+    free_mapa();
     exit(0);
     break;
 
@@ -150,27 +241,51 @@ void normal_keys(unsigned char key, int x, int y)
     break;
 
   case 101: // e
-    escalacion_mapa(0.9,0,0);
+    down_escalar_abajo=true;
     break;
 
   case 69: // e
-    escalacion_mapa(1.5,0,0);
+    down_escalar_arriba=true;
     break;
 
   case 114: // r
-    rotacion_mapa(-1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+    rotacion_viewport=true;
+    rv_clockwise=true;
     break;
 
-  case 82: // R
-    rotacion_mapa(1,(double)(viewport[LB_P].x+viewport[RT_P].x)/2,(double)(viewport[LB_P].y+viewport[RT_P].y)/2);
+  case 18: // r
+    rotacion_viewport=true;
+    rv_clockwise=true;
+    break;
+
+  case 102: // f
+    rotacion_viewport=true;
+    rv_clockwise=false;
+    break;
+
+  case 6: // f
+    rotacion_viewport=true;
+    rv_clockwise=false;
     break;
 
   case 116: // t
-    rotacion_mapa(-1,0,0);
+    rotacion_cero=true;
+    rc_clockwise=true;
     break;
 
-  case 84: // T
-    rotacion_mapa(1,0,0);
+  case 20: // t
+    rotacion_cero=true;
+    rc_clockwise=true;
+    break;
+
+  case 103: // g
+    rotacion_cero=true;
+    rc_clockwise=false;
+    break;
+
+  case 7: // g
+    rotacion_cero=true;
+    rc_clockwise=false;
     break;
 
   case 43: // +
